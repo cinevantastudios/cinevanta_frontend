@@ -1,0 +1,291 @@
+@import "tailwindcss";
+
+:root {
+  /* Color tokens (Spec 4.2) */
+  --cream: #fff6e3;
+  --ink: #15110e;
+  --yellow: #ffc93c;
+  --sand: #ffe7b0;
+  --white: #ffffff;
+  --muted: #5c5249;
+  --muted-on-ink: #d8cebd;
+  --faint: #a39787;
+  --line-on-ink: #5a5148;
+
+  /* Radii (Spec 4.4) */
+  --radius-pill: 999px;
+  --radius-card: 28px;
+  --radius-block: 36px;
+  --radius-media: 32px;
+  --radius-frame: 24px;
+  --radius-input: 14px;
+
+  /* Z-index scale (Spec 4.4) */
+  --z-ad-strip: 10;
+  --z-navbar: 50;
+  --z-dialog: 100;
+  --z-toast: 110;
+
+  /* Motion easings (Spec 10) */
+  --ease-move: cubic-bezier(0.22, 0.8, 0.2, 1);
+  --ease-opacity: ease-out;
+}
+
+@theme inline {
+  /* Colors */
+  --color-cream: var(--cream);
+  --color-ink: var(--ink);
+  --color-yellow: var(--yellow);
+  --color-sand: var(--sand);
+  --color-white: var(--white);
+  --color-muted: var(--muted);
+  --color-muted-on-ink: var(--muted-on-ink);
+  --color-faint: var(--faint);
+  --color-line-on-ink: var(--line-on-ink);
+
+  /* Fonts */
+  --font-display: var(--font-archivo), "Arial Black", Impact, sans-serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-dm-mono), ui-monospace, SFMono-Regular, monospace;
+
+  /* Radii */
+  --radius-pill: var(--radius-pill);
+  --radius-card: var(--radius-card);
+  --radius-block: var(--radius-block);
+  --radius-media: var(--radius-media);
+  --radius-frame: var(--radius-frame);
+  --radius-input: var(--radius-input);
+
+  /* Breakpoints (Spec 4.4) */
+  --breakpoint-xs: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* Base styles */
+html {
+  background-color: var(--cream);
+  color: var(--ink);
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Accessible focus rings (Spec 4.2) */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+[data-surface="ink"] :where(a, button, input, select, textarea, [tabindex]):focus-visible,
+.surface-ink :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 2px;
+}
+
+/* Typography utilities (Spec 4.3) */
+.font-display-expanded {
+  font-family: var(--font-archivo), "Arial Black", Impact, sans-serif;
+  font-weight: 800;
+  font-stretch: 125%;
+  font-variation-settings: "wdth" 125;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+}
+
+.font-meta {
+  font-family: var(--font-dm-mono), ui-monospace, SFMono-Regular, monospace;
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+}
+
+.text-h1 {
+  font-size: clamp(44px, 7.5vw, 96px);
+}
+
+.text-h2 {
+  font-size: clamp(36px, 5vw, 68px);
+}
+
+.text-h3 {
+  font-size: 22px;
+}
+
+@media (min-width: 768px) {
+  .text-h3 {
+    font-size: 24px;
+  }
+}
+
+.text-ticket-date {
+  font-size: 64px;
+  line-height: 0.85;
+}
+
+@media (min-width: 768px) {
+  .text-ticket-date {
+    font-size: 96px;
+    line-height: 0.85;
+  }
+}
+
+.text-wordmark-giant {
+  font-size: clamp(72px, 12.4vw, 158px);
+  line-height: 0.92;
+}
+
+/* Outlined display text (Spec 4.3 & 6) */
+.text-outline-ink {
+  color: transparent;
+  -webkit-text-stroke: 2.5px var(--ink);
+}
+
+@supports not (-webkit-text-stroke: 1px black) {
+  .text-outline-ink {
+    color: var(--ink);
+  }
+}
+
+.text-outline-cream {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--cream);
+}
+
+@supports not (-webkit-text-stroke: 1px black) {
+  .text-outline-cream {
+    color: var(--cream);
+  }
+}
+
+/* Ambient & UI animations (Spec 10) */
+@keyframes badge-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes ad-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes dialog-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes dialog-content-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes dialog-content-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-badge-spin {
+  animation: badge-spin 18s linear infinite;
+}
+
+.animate-marquee {
+  animation: marquee-scroll 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.animate-skeleton {
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-badge-spin,
+  .animate-marquee,
+  .animate-skeleton {
+    animation: none;
+  }
+}
+
