@@ -1,21 +1,8 @@
 import type { NextConfig } from "next";
+import { getEnvApiBaseUrl, getEnvImageHosts } from "./lib/env";
 
-function parseImageHosts(): string[] {
-  const hosts = new Set<string>();
-  const raw = process.env.NEXT_PUBLIC_IMAGE_HOSTS ?? "";
-
-  for (const entry of raw.split(",")) {
-    const trimmed = entry.trim();
-    if (trimmed) {
-      hosts.add(trimmed);
-    }
-  }
-
-  return Array.from(hosts);
-}
-
-const imageHosts = parseImageHosts();
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+const imageHosts = getEnvImageHosts();
+const apiBaseUrl = getEnvApiBaseUrl();
 
 function getOrigin(url: string): string {
   try {
@@ -67,6 +54,15 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "Content-Security-Policy", value: cspDirectives },
+          // Enforce HTTPS via HSTS in production deployments.
+          ...(!isDev
+            ? [
+                {
+                  key: "Strict-Transport-Security",
+                  value: "max-age=63072000; includeSubDomains; preload",
+                },
+              ]
+            : []),
         ],
       },
     ];
@@ -74,4 +70,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-

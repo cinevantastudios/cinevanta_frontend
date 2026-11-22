@@ -17,6 +17,7 @@ import { Wordmark } from "@/components/layout/Wordmark";
 import { WorkFrame } from "@/components/work/WorkFrame";
 import { content } from "@/lib/content";
 import { getMockAds, getMockEvents, getMockWork } from "@/lib/mocks";
+import { site, themeColors } from "@/lib/site";
 import { StyleguideInteractive } from "./StyleguideShowcase";
 
 export const metadata: Metadata = {
@@ -25,15 +26,15 @@ export const metadata: Metadata = {
 };
 
 const COLOR_SWATCHES = [
-  { name: "cream", hex: "#FFF6E3", bg: "bg-cream", text: "text-ink", note: "Page background" },
-  { name: "ink", hex: "#15110E", bg: "bg-ink", text: "text-cream", note: "Text, borders, dark sections" },
-  { name: "yellow", hex: "#FFC93C", bg: "bg-yellow", text: "text-ink", note: "Primary accent, stickers, highlights" },
-  { name: "sand", hex: "#FFE7B0", bg: "bg-sand", text: "text-ink", note: "Soft section background, card tint" },
-  { name: "white", hex: "#FFFFFF", bg: "bg-white", text: "text-ink", note: "Cards & inputs" },
-  { name: "muted", hex: "#5C5249", bg: "bg-muted", text: "text-cream", note: "Secondary text on light" },
-  { name: "muted-on-ink", hex: "#D8CEBD", bg: "bg-muted-on-ink", text: "text-ink", note: "Secondary text on ink" },
-  { name: "faint", hex: "#A39787", bg: "bg-faint", text: "text-ink", note: "Decorative only (partners)" },
-  { name: "line-on-ink", hex: "#5A5148", bg: "bg-line-on-ink", text: "text-cream", note: "Dividers on ink" },
+  { name: "cream", hex: themeColors.cream, bg: "bg-cream", text: "text-ink", note: "Page background" },
+  { name: "ink", hex: themeColors.ink, bg: "bg-ink", text: "text-cream", note: "Text, borders, dark sections" },
+  { name: "yellow", hex: themeColors.yellow, bg: "bg-yellow", text: "text-ink", note: "Primary accent, stickers, highlights" },
+  { name: "sand", hex: themeColors.sand, bg: "bg-sand", text: "text-ink", note: "Soft section background, card tint" },
+  { name: "white", hex: themeColors.white, bg: "bg-white", text: "text-ink", note: "Cards & inputs" },
+  { name: "muted", hex: themeColors.muted, bg: "bg-muted", text: "text-cream", note: "Secondary text on light" },
+  { name: "muted-on-ink", hex: themeColors.mutedOnInk, bg: "bg-muted-on-ink", text: "text-ink", note: "Secondary text on ink" },
+  { name: "faint", hex: themeColors.faint, bg: "bg-faint", text: "text-ink", note: "Decorative only (partners)" },
+  { name: "line-on-ink", hex: themeColors.lineOnInk, bg: "bg-line-on-ink", text: "text-cream", note: "Dividers on ink" },
 ] as const;
 
 export default function StyleguidePage() {
@@ -48,10 +49,10 @@ export default function StyleguidePage() {
         <Container className="space-y-4">
           <Sticker rotation={-3}>Dev only</Sticker>
           <h1 className="font-display-expanded text-h1">
-            Cinevanta <span className="text-outline-ink">Styleguide</span>
+            {site.wordmark} <span className="text-outline-ink">Styleguide</span>
           </h1>
-          <p className="max-w-[60ch] text-[18px] text-muted">
-            Design tokens, typography, and UI primitives for Cinevanta Studios. This route returns
+          <p className="max-w-[60ch] text-[1.125rem] text-muted">
+            Design tokens, typography, and UI primitives for {site.name}. This route returns
             404 in production.
           </p>
         </Container>
@@ -70,10 +71,10 @@ export default function StyleguidePage() {
                 <div
                   className={`flex h-28 items-end justify-between border-b-2 border-ink p-4 ${swatch.bg} ${swatch.text}`}
                 >
-                  <span className="font-display-expanded text-[20px]">{swatch.name}</span>
+                  <span className="font-display-expanded text-[1.25rem]">{swatch.name}</span>
                   <span className="font-meta">{swatch.hex}</span>
                 </div>
-                <p className="px-4 py-3 text-[14px] text-muted">{swatch.note}</p>
+                <p className="px-4 py-3 text-[0.875rem] text-muted">{swatch.note}</p>
               </div>
             ))}
           </div>
@@ -92,27 +93,27 @@ export default function StyleguidePage() {
               </p>
             </div>
             <div className="border-b border-ink/20 pb-5">
-              <span className="font-meta text-muted">Display H2 — clamp(36px, 5vw, 68px)</span>
+              <span className="font-meta text-muted">Display H2 — clamp(32.4px, 4.5vw, 61.2px)</span>
               <p className="font-display-expanded text-h2 mt-2">Got a story, a brand or a stage?</p>
             </div>
             <div className="border-b border-ink/20 pb-5">
-              <span className="font-meta text-muted">Display H3 — 24px / 22px mobile</span>
+              <span className="font-meta text-muted">Display H3 — 21.6px / 19.8px mobile</span>
               <p className="font-display-expanded text-h3 mt-2">Live Events &amp; Sports</p>
             </div>
             <div className="border-b border-ink/20 pb-5">
-              <span className="font-meta text-muted">Ticket date — 96px / 64px mobile</span>
+              <span className="font-meta text-muted">Ticket date — 86.4px / 57.6px mobile</span>
               <p className="font-display-expanded text-ticket-date mt-2">15</p>
             </div>
             <div className="border-b border-ink/20 pb-5">
-              <span className="font-meta text-muted">Lead 18px &amp; Body 16px — Inter</span>
-              <p className="mt-2 max-w-[65ch] text-[18px] text-muted">{content.hero.lead}</p>
-              <p className="mt-2 max-w-[65ch] text-[16px] text-ink">
+              <span className="font-meta text-muted">Lead 1.125rem &amp; Body 1rem — Inter (90% root scale)</span>
+              <p className="mt-2 max-w-[65ch] text-[1.125rem] text-muted">{content.hero.lead}</p>
+              <p className="mt-2 max-w-[65ch] text-[1rem] text-ink">
                 Cinevanta Studios develops, produces and presents films, advertising campaigns, live
                 entertainment, fashion shows and corporate stages from Delhi.
               </p>
             </div>
             <div>
-              <span className="font-meta text-muted">Meta — DM Mono 500, 11px uppercase</span>
+              <span className="font-meta text-muted">Meta — DM Mono 500, 10px uppercase</span>
               <p className="font-meta mt-2 text-ink">Film • 2026 • Delhi, India</p>
             </div>
           </div>
@@ -183,8 +184,8 @@ export default function StyleguidePage() {
                   <p
                     className={
                       tone === "ink"
-                        ? "text-[14px] text-muted-on-ink"
-                        : "text-[14px] text-muted"
+                        ? "text-[0.875rem] text-muted-on-ink"
+                        : "text-[0.875rem] text-muted"
                     }
                   >
                     2px ink border, 28px radius, 26px padding, 270px min-height.
@@ -269,7 +270,7 @@ export default function StyleguidePage() {
 
           <div className="space-y-4">
             <h3 className="font-display-expanded text-h3 text-cream">Ad strip (mock data)</h3>
-            <p className="text-[15px] text-muted-on-ink">
+            <p className="text-[0.9375rem] text-muted-on-ink">
               Full-bleed carousel shown directly below with 3 mock slides, hover/focus controls,
               pause toggle, dots, and progress bar.
             </p>

@@ -18,8 +18,11 @@ import {
   Sticker,
   Textarea,
   Toast,
+  ToastProvider,
   getFieldDescribedBy,
+  useToast,
 } from "@/components/ui";
+import { SocialLinks } from "@/components/layout/SocialLinks";
 import { StyleguideInteractive } from "@/app/styleguide/StyleguideShowcase";
 
 describe("UI Kit components", () => {
@@ -148,6 +151,62 @@ describe("UI Kit components", () => {
 
     const results = await axe(container);
     expect(results).toHaveNoViolations();
+  });
+
+  it("manages global ToastProvider state via useToast and throws when used outside provider", async () => {
+    const user = userEvent.setup();
+
+    function ToastConsumer() {
+      const { showToast, dismissToast } = useToast();
+      return (
+        <div>
+          <button type="button" onClick={() => showToast("Saved successfully", 0)}>
+            Show
+          </button>
+          <button type="button" onClick={() => dismissToast()}>
+            Dismiss
+          </button>
+        </div>
+      );
+    }
+
+    expect(() => render(<ToastConsumer />)).toThrow(
+      "useToast must be used within a ToastProvider",
+    );
+
+    render(
+      <ToastProvider>
+        <ToastConsumer />
+      </ToastProvider>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Show" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Saved successfully");
+
+    await user.click(screen.getByRole("button", { name: "Dismiss" }));
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  });
+
+  it("filters out unsafe social links while rendering safe external and internal links", () => {
+    render(
+      <SocialLinks
+        surface="ink"
+        socials={[
+          { label: "Instagram", href: "https://instagram.com/cinevanta" },
+          { label: "Bad", href: "javascript:alert(1)" },
+          { label: "Empty", href: "   " },
+          { label: "Placeholder", href: "#" },
+        ]}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: "Instagram" })).toHaveAttribute(
+      "rel",
+      "noopener noreferrer",
+    );
+    expect(screen.getByRole("link", { name: "Placeholder" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Bad" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Empty" })).not.toBeInTheDocument();
   });
 });
 

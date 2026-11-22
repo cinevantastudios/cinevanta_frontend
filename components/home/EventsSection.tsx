@@ -3,6 +3,7 @@ import { Container, Section, SectionHeading } from "@/components/ui";
 import { NotifyForm } from "@/components/events/NotifyForm";
 import { TicketCard } from "@/components/home/TicketCard";
 import { content } from "@/lib/content";
+import { displayLimits, routes } from "@/lib/site";
 import { formatEventDateParts } from "@/lib/utils";
 import type { EventItem } from "@/types/api";
 
@@ -13,7 +14,7 @@ export interface EventsSectionProps {
 
 export function EventsSection({ upcomingEvents, pastEvents }: EventsSectionProps) {
   const nextEvent = upcomingEvents[0];
-  const visiblePast = pastEvents.slice(0, 4);
+  const visiblePast = pastEvents.slice(0, displayLimits.homePastEventsCount);
 
   return (
     <Section id="events" tone="ink" aria-labelledby="events-heading">
@@ -30,8 +31,8 @@ export function EventsSection({ upcomingEvents, pastEvents }: EventsSectionProps
             {nextEvent ? (
               <TicketCard event={nextEvent} />
             ) : (
-              <div className="max-w-[760px] space-y-6 rounded-card border-2 border-dashed border-cream/60 bg-ink p-7 text-cream md:p-9">
-                <p className="max-w-[52ch] text-[17px] leading-relaxed text-cream">
+              <div className="max-w-[47.5rem] space-y-6 rounded-card border-2 border-dashed border-cream/60 bg-ink p-7 text-cream md:p-9">
+                <p className="max-w-[52ch] text-[1.0625rem] leading-relaxed text-cream">
                   {content.events.emptyUpcoming}
                 </p>
                 <NotifyForm
@@ -46,7 +47,7 @@ export function EventsSection({ upcomingEvents, pastEvents }: EventsSectionProps
 
           {/* Past events list */}
           <div className="space-y-5 lg:col-span-5">
-            <h3 className="font-display-expanded text-[22px] text-cream md:text-[24px]">
+            <h3 className="font-display-expanded text-[1.375rem] text-cream md:text-[1.5rem]">
               {content.events.pastHeading}
             </h3>
 
@@ -60,16 +61,16 @@ export function EventsSection({ upcomingEvents, pastEvents }: EventsSectionProps
                       className="flex items-baseline justify-between gap-4 py-5"
                     >
                       <div className="space-y-1">
-                        <p className="font-display-expanded text-[20px] leading-tight text-cream md:text-[24px]">
+                        <p className="font-display-expanded text-[1.25rem] leading-tight text-cream md:text-[1.5rem]">
                           {event.title}
                         </p>
-                        <p className="text-[14px] text-muted-on-ink">
+                        <p className="text-[0.875rem] text-muted-on-ink">
                           {event.venue} • {year}
                         </p>
                       </div>
                       <Link
-                        href="/events?status=past"
-                        className="inline-flex min-h-[44px] shrink-0 items-center text-[14px] font-semibold text-yellow underline decoration-2 underline-offset-4 transition-opacity duration-150 hover:opacity-80"
+                        href={routes.eventsByStatus("past")}
+                        className="inline-flex min-h-[2.75rem] shrink-0 items-center text-[0.875rem] font-semibold text-yellow underline decoration-2 underline-offset-4 transition-opacity duration-150 hover:opacity-80"
                       >
                         {content.events.galleryLink}
                       </Link>
@@ -78,15 +79,15 @@ export function EventsSection({ upcomingEvents, pastEvents }: EventsSectionProps
                 })}
               </ul>
             ) : (
-              <p className="border-t border-line-on-ink pt-5 text-[15px] text-muted-on-ink">
+              <p className="border-t border-line-on-ink pt-5 text-[0.9375rem] text-muted-on-ink">
                 {content.events.emptyPast}
               </p>
             )}
 
             <div className="pt-1">
               <Link
-                href="/events"
-                className="inline-flex min-h-[44px] items-center text-[15px] font-semibold text-cream underline decoration-2 underline-offset-[6px] transition-colors duration-150 hover:text-yellow"
+                href={routes.events}
+                className="inline-flex min-h-[2.75rem] items-center text-[0.9375rem] font-semibold text-cream underline decoration-2 underline-offset-[6px] transition-colors duration-150 hover:text-yellow"
               >
                 {content.events.seeAll}
               </Link>

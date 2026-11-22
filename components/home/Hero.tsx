@@ -18,9 +18,9 @@ export function Hero({ showreel }: HeroProps) {
 
   return (
     <LazyMotion features={domAnimation}>
-      <section className="relative bg-cream pt-10 pb-14 md:pt-12 md:pb-16 lg:pt-14 lg:pb-[72px]">
+      <section className="relative bg-cream pt-10 pb-14 md:pt-12 md:pb-16 lg:pt-14 lg:pb-[65px]">
         <Container className="relative">
-          {/* Desktop rotating badge: right 56px, top 40px */}
+          {/* Desktop rotating badge: right 3.5rem (50.4px), top 2.5rem (36px) */}
           <m.div
             initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.78 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -30,46 +30,38 @@ export function Hero({ showreel }: HeroProps) {
             <RotatingBadge />
           </m.div>
 
-          <div className="max-w-[1000px] space-y-6">
+          <div className="max-w-[900px] space-y-6">
             <div>
               <Sticker rotation={-3}>{content.hero.kicker}</Sticker>
             </div>
 
             <h1 className="font-display-expanded text-h1 text-ink">
-              <span className="inline-block overflow-hidden align-bottom">
-                <m.span
-                  className="inline-block"
-                  initial={prefersReducedMotion ? false : { y: "105%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ duration: 0.7, delay: 0, ease: EASE_MOVE }}
-                >
-                  {content.hero.headlineLines[0]}&nbsp;
-                </m.span>
-              </span>
-              <span className="inline-block overflow-hidden align-bottom">
-                <m.span
-                  className="inline-block"
-                  initial={prefersReducedMotion ? false : { y: "105%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ duration: 0.7, delay: 0.12, ease: EASE_MOVE }}
-                >
-                  {content.hero.headlineLines[1]}
-                </m.span>
-              </span>
-              <br className="hidden lg:block" />{" "}
-              <span className="inline-block overflow-hidden align-bottom">
-                <m.span
-                  className="text-outline-ink inline-block"
-                  initial={prefersReducedMotion ? false : { y: "105%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ duration: 0.7, delay: 0.24, ease: EASE_MOVE }}
-                >
-                  {content.hero.headlineLines[2]}
-                </m.span>
-              </span>
+              {content.hero.headlineLines.map((line, index) => {
+                const isOutlined = index === content.hero.outlinedLineIndex;
+                const isFirst = index === 0;
+                const breakBefore = index === content.hero.outlinedLineIndex;
+
+                return (
+                  <span key={line}>
+                    {breakBefore ? <br className="hidden lg:block" /> : null}
+                    {breakBefore ? " " : null}
+                    <span className="inline-block overflow-hidden align-bottom">
+                      <m.span
+                        className={isOutlined ? "text-outline-ink inline-block" : "inline-block"}
+                        initial={prefersReducedMotion ? false : { y: "105%" }}
+                        animate={{ y: "0%" }}
+                        transition={{ duration: 0.7, delay: index * 0.12, ease: EASE_MOVE }}
+                      >
+                        {line}
+                        {isFirst ? "\u00A0" : ""}
+                      </m.span>
+                    </span>
+                  </span>
+                );
+              })}
             </h1>
 
-            <p className="max-w-[46ch] text-[18px] leading-[1.6] text-muted">
+            <p className="max-w-[46ch] text-[16.2px] leading-[1.6] text-muted">
               {content.hero.lead}
             </p>
 

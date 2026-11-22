@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { Sticker } from "@/components/ui";
 import { content } from "@/lib/content";
-import { cn } from "@/lib/utils";
+import { mediaConfig } from "@/lib/site";
+import { cn, isExternalHref, isSafeHref } from "@/lib/utils";
 import type { Ad } from "@/types/api";
 
 export interface AdSlideProps {
@@ -15,15 +16,13 @@ export interface AdSlideProps {
   onSlideClick: (id: string) => void;
 }
 
-function isExternalUrl(url: string): boolean {
-  return /^https?:\/\//i.test(url);
-}
-
+/** Renders a single ad slide with protocol validation and a yellow display-title fallback on image failure. */
 export function AdSlide({ ad, index, total, isActive, onSlideClick }: AdSlideProps) {
   const [imageFailed, setImageFailed] = useState(false);
 
   const label = ad.label?.trim() || content.adStrip.defaultLabel;
-  const external = isExternalUrl(ad.linkUrl);
+  const safeLink = isSafeHref(ad.linkUrl);
+  const external = safeLink && isExternalHref(ad.linkUrl);
   const linkClassName = cn(
     "relative block w-full overflow-hidden bg-yellow",
     "aspect-[5/2] md:aspect-[8/1] min-h-[96px] max-h-[260px]",
@@ -33,7 +32,7 @@ export function AdSlide({ ad, index, total, isActive, onSlideClick }: AdSlidePro
   const slideContent = (
     <>
       <span className="pointer-events-none absolute top-3 left-3 z-[2]">
-        <Sticker rotation={0} className="px-3 py-1 text-[10px]">
+        <Sticker rotation={0} className="px-3 py-1 text-[9px]">
           {label}
         </Sticker>
       </span>
@@ -44,7 +43,7 @@ export function AdSlide({ ad, index, total, isActive, onSlideClick }: AdSlidePro
         </div>
       ) : (
         <picture className="block h-full w-full">
-          <source media="(max-width: 767px)" srcSet={ad.imageMobile} />
+          <source media={mediaConfig.mobileMediaQuery} srcSet={ad.imageMobile} />
           <img
             src={ad.imageDesktop}
             alt={ad.alt}
@@ -68,7 +67,9 @@ export function AdSlide({ ad, index, total, isActive, onSlideClick }: AdSlidePro
       aria-hidden={!isActive}
       className="w-full shrink-0 grow-0 basis-full"
     >
-      {external ? (
+      {!safeLink ? (
+        <div className={linkClassName}>{slideContent}</div>
+      ) : external ? (
         <a
           href={ad.linkUrl}
           target="_blank"

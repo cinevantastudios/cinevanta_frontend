@@ -243,5 +243,47 @@ describe("AdStrip", () => {
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
+
+  it("supports horizontal touch swipe gestures to change slides and ignores vertical scroll gestures", () => {
+    const ads = [makeAd("one", 1), makeAd("two", 2)];
+    const { container } = render(<AdStrip ads={ads} />);
+    const track = container.querySelector(".will-change-transform")!;
+
+    // Horizontal left swipe (> 40px) advances to slide 2
+    fireEvent.touchStart(track, { touches: [{ clientX: 200, clientY: 50 }] });
+    fireEvent.touchMove(track, { touches: [{ clientX: 130, clientY: 52 }] });
+    fireEvent.touchEnd(track);
+    expect(screen.getByRole("button", { name: "Go to slide 2" })).toHaveAttribute(
+      "aria-current",
+      "true",
+    );
+
+    // Vertical swipe is ignored and stays on slide 2
+    fireEvent.touchStart(track, { touches: [{ clientX: 200, clientY: 50 }] });
+    fireEvent.touchMove(track, { touches: [{ clientX: 202, clientY: 140 }] });
+    fireEvent.touchEnd(track);
+    expect(screen.getByRole("button", { name: "Go to slide 2" })).toHaveAttribute(
+      "aria-current",
+      "true",
+    );
+
+    // Horizontal right swipe returns to slide 1
+    fireEvent.touchStart(track, { touches: [{ clientX: 100, clientY: 50 }] });
+    fireEvent.touchMove(track, { touches: [{ clientX: 180, clientY: 52 }] });
+    fireEvent.touchEnd(track);
+    expect(screen.getByRole("button", { name: "Go to slide 1" })).toHaveAttribute(
+      "aria-current",
+      "true",
+    );
+  });
+
+  it("renders non-clickable slide container if an unsafe linkUrl reaches AdSlide", () => {
+    render(
+      <AdStrip
+        ads={[makeAd("unsafe", 1, { linkUrl: "javascript:alert(1)" })]}
+      />,
+    );
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
 });
 

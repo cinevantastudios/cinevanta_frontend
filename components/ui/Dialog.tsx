@@ -18,10 +18,14 @@ export interface DialogProps {
 }
 
 const sizeClasses: Record<NonNullable<DialogProps["size"]>, string> = {
-  sm: "md:max-w-[480px]",
-  lg: "md:max-w-[760px]",
+  sm: "md:max-w-[30rem]",
+  lg: "md:max-w-[47.5rem]",
 };
 
+/**
+ * Accessible Radix modal dialog that renders as a bottom sheet on mobile and centered card on desktop.
+ * Uses CSS z-index tokens, traps focus, closes on ESC/backdrop click, and restores trigger focus.
+ */
 export function Dialog({
   open,
   onOpenChange,
@@ -39,7 +43,7 @@ export function Dialog({
       <RadixDialog.Portal>
         <RadixDialog.Overlay
           className={cn(
-            "fixed inset-0 z-[100] bg-ink/60",
+            "fixed inset-0 z-[var(--z-dialog)] bg-ink/60",
             "data-[state=open]:animate-[dialog-overlay-in_200ms_ease-out]",
             "data-[state=closed]:animate-[dialog-overlay-out_150ms_ease-out]",
             "motion-reduce:animate-none",
@@ -47,11 +51,11 @@ export function Dialog({
         />
         <RadixDialog.Content
           className={cn(
-            "fixed z-[100] flex max-h-[90vh] w-full flex-col overflow-y-auto bg-cream text-ink",
+            "fixed z-[var(--z-dialog)] flex max-h-[90vh] w-full flex-col overflow-y-auto bg-cream text-ink",
             // Mobile bottom sheet
-            "right-0 bottom-0 left-0 rounded-t-[28px] rounded-b-none border-x-2 border-t-2 border-b-0 border-ink p-6",
+            "right-0 bottom-0 left-0 rounded-t-card rounded-b-none border-x-2 border-t-2 border-b-0 border-ink p-6",
             // Desktop centered modal
-            "md:top-1/2 md:right-auto md:bottom-auto md:left-1/2 md:w-[calc(100%-32px)] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-card md:border-2 md:p-8",
+            "md:top-1/2 md:right-auto md:bottom-auto md:left-1/2 md:w-[calc(100%-2rem)] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-card md:border-2 md:p-8",
             "data-[state=open]:animate-[dialog-content-in_200ms_cubic-bezier(0.22,0.8,0.2,1)]",
             "data-[state=closed]:animate-[dialog-content-out_150ms_ease-out]",
             "motion-reduce:animate-none",
@@ -61,11 +65,11 @@ export function Dialog({
         >
           <div className="mb-4 flex items-start justify-between gap-4">
             <div className="space-y-1.5">
-              <RadixDialog.Title className="font-display-expanded text-[24px] leading-tight text-ink">
+              <RadixDialog.Title className="font-display-expanded text-[1.5rem] leading-tight text-ink">
                 {title}
               </RadixDialog.Title>
               {description ? (
-                <RadixDialog.Description className="text-[15px] leading-relaxed text-muted">
+                <RadixDialog.Description className="text-[0.9375rem] leading-relaxed text-muted">
                   {description}
                 </RadixDialog.Description>
               ) : null}
@@ -86,4 +90,3 @@ export function Dialog({
     </RadixDialog.Root>
   );
 }
-

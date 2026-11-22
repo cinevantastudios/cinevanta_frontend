@@ -6,6 +6,7 @@ import { Container, EmptyState, Section, SectionHeading } from "@/components/ui"
 import { WorkDialog } from "@/components/work/WorkDialog";
 import { WorkFrame } from "@/components/work/WorkFrame";
 import { content } from "@/lib/content";
+import { displayLimits, routes } from "@/lib/site";
 import type { WorkItem } from "@/types/api";
 
 export interface WorkPreviewProps {
@@ -14,7 +15,7 @@ export interface WorkPreviewProps {
 
 export function WorkPreview({ items }: WorkPreviewProps) {
   const [selected, setSelected] = useState<WorkItem | null>(null);
-  const visibleItems = items.slice(0, 3);
+  const visibleItems = items.slice(0, displayLimits.homeWorkPreviewCount);
   const hasItems = visibleItems.length > 0;
 
   return (
@@ -26,8 +27,8 @@ export function WorkPreview({ items }: WorkPreviewProps) {
           sticker={content.work.sticker}
           action={
             <Link
-              href="/work"
-              className="inline-flex min-h-[44px] items-center text-[15px] font-semibold text-ink underline decoration-2 underline-offset-[6px] transition-opacity duration-150 hover:opacity-75"
+              href={routes.work}
+              className="inline-flex min-h-[2.75rem] items-center text-[0.9375rem] font-semibold text-ink underline decoration-2 underline-offset-[6px] transition-opacity duration-150 hover:opacity-75"
             >
               {content.work.seeAll}
             </Link>

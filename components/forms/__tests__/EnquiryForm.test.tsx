@@ -9,7 +9,7 @@ import AboutPage from "@/app/about/page";
 import NotFound from "@/app/not-found";
 import PrivacyPage from "@/app/privacy/page";
 import TermsPage from "@/app/terms/page";
-import * as api from "@/lib/api";
+import * as api from "@/lib/api-client";
 import { getMockEvents, getMockWork } from "@/lib/mocks";
 
 vi.mock("next/navigation", () => ({

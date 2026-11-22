@@ -13,34 +13,47 @@ import {
 import { AdControls } from "@/components/ads/AdControls";
 import { AdSlide } from "@/components/ads/AdSlide";
 import { content } from "@/lib/content";
+import { useDocumentHidden, usePrefersReducedMotion } from "@/lib/hooks";
+import { displayLimits, mediaConfig, uiConfig } from "@/lib/site";
 import { trackAdClick, trackAdImpressionOnce } from "@/lib/tracking";
 import { cn, filterAndSortAds } from "@/lib/utils";
 import type { Ad } from "@/types/api";
 
-const AUTOPLAY_INTERVAL_MS = 5500;
-const IMPRESSION_DELAY_MS = 1000;
-const SWIPE_DISTANCE_PX = 40;
-const SWIPE_VELOCITY_PX_PER_MS = 0.3;
+const AUTOPLAY_INTERVAL_MS = uiConfig.adAutoplayIntervalMs;
+const IMPRESSION_DELAY_MS = uiConfig.adImpressionDelayMs;
+const SWIPE_DISTANCE_PX = uiConfig.adSwipeDistancePx;
+const SWIPE_VELOCITY_PX_PER_MS = uiConfig.adSwipeVelocityPxPerMs;
 
 export interface AdStripProps {
   ads: Ad[];
+  /** Server render timestamp used to keep initial SSR and client hydration filtering deterministic. */
+  renderedAtIso?: string;
   className?: string;
 }
 
-export function AdStrip({ ads, className }: AdStripProps) {
-  const activeAds = useMemo(() => filterAndSortAds(ads, new Date(), 5), [ads]);
+/**
+ * Full-bleed own-event promo carousel rendered directly beneath the Navbar.
+ * Supports autoplay, keyboard navigation, touch swiping, visibility/hover/focus pausing,
+ * reduced motion, and per-session impression/click tracking.
+ */
+export function AdStrip({ ads, renderedAtIso, className }: AdStripProps) {
+  const activeAds = useMemo(() => {
+    const referenceDate = renderedAtIso ? new Date(renderedAtIso) : new Date();
+    return filterAndSortAds(ads, referenceDate, displayLimits.maxAdSlides);
+  }, [ads, renderedAtIso]);
   const total = activeAds.length;
 
   const [rawActiveIndex, setRawActiveIndex] = useState(0);
   const [userPaused, setUserPaused] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isFocusWithin, setIsFocusWithin] = useState(false);
-  const [isTabHidden, setIsTabHidden] = useState(false);
   const [isInView, setIsInView] = useState(true);
   const [isHalfVisible, setIsHalfVisible] = useState(true);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const [dragOffsetPx, setDragOffsetPx] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+
+  const reducedMotion = usePrefersReducedMotion();
+  const isTabHidden = useDocumentHidden();
 
   const stripRef = useRef<HTMLElement | null>(null);
   const touchStartXRef = useRef(0);
@@ -79,41 +92,7 @@ export function AdStrip({ ads, className }: AdStripProps) {
     [total],
   );
 
-  // Detect prefers-reduced-motion
-  useEffect(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-      return;
-    }
-
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(mediaQuery.matches);
-
-    function handleChange(event: MediaQueryListEvent) {
-      setReducedMotion(event.matches);
-    }
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => {
-      mediaQuery.removeEventListener("change", handleChange);
-    };
-  }, []);
-
-  // Pause when browser tab is hidden
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-
-    function handleVisibilityChange() {
-      setIsTabHidden(document.visibilityState === "hidden");
-    }
-
-    handleVisibilityChange();
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
-
-  // Pause when scrolled out of view & track >= 50% visibility for impressions
+  // Pause when scrolled out of view & track >= 50% visibility for impressions.
   useEffect(() => {
     const element = stripRef.current;
     if (!element || typeof IntersectionObserver === "undefined") {
@@ -136,7 +115,7 @@ export function AdStrip({ ads, className }: AdStripProps) {
     };
   }, [total]);
 
-  // Autoplay interval
+  // Autoplay interval.
   useEffect(() => {
     if (isAutoplayPaused) {
       return;
@@ -151,7 +130,7 @@ export function AdStrip({ ads, className }: AdStripProps) {
     };
   }, [isAutoplayPaused, total, activeIndex]);
 
-  // Impression tracking: >= 50% visible for 1s, once per session per ad
+  // Impression tracking: >= 50% visible for 1s, once per session per ad.
   useEffect(() => {
     if (!currentAd || !isHalfVisible || isTabHidden) {
       return;
@@ -167,7 +146,7 @@ export function AdStrip({ ads, className }: AdStripProps) {
     };
   }, [currentAd, isHalfVisible, isTabHidden]);
 
-  // Preload next slide image when current becomes active
+  // Preload next slide image when current becomes active.
   useEffect(() => {
     if (total <= 1 || typeof window === "undefined") {
       return;
@@ -178,7 +157,7 @@ export function AdStrip({ ads, className }: AdStripProps) {
 
     const isMobile =
       typeof window.matchMedia === "function" &&
-      window.matchMedia("(max-width: 767px)").matches;
+      window.matchMedia(mediaConfig.mobileMediaQuery).matches;
     const img = new window.Image();
     img.src = isMobile ? nextSlide.imageMobile : nextSlide.imageDesktop;
   }, [activeAds, activeIndex, total]);
@@ -276,7 +255,7 @@ export function AdStrip({ ads, className }: AdStripProps) {
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
       className={cn(
-        "group/strip relative z-[10] w-full overflow-hidden border-y-[3px] border-ink bg-yellow",
+        "group/strip relative z-[var(--z-ad-strip)] w-full overflow-hidden border-y-[3px] border-ink bg-yellow",
         className,
       )}
     >
@@ -333,4 +312,3 @@ export function AdStrip({ ads, className }: AdStripProps) {
     </section>
   );
 }
-

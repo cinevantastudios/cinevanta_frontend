@@ -8,6 +8,7 @@ export interface EmptyStateProps {
   className?: string;
 }
 
+/** Intentional dashed-border empty state prompting the visitor with a clear next action. */
 export function EmptyState({
   message,
   action,
@@ -29,7 +30,7 @@ export function EmptyState({
     >
       <p
         className={cn(
-          "max-w-[56ch] text-[16px] md:text-[18px]",
+          "max-w-[56ch] text-[1rem] md:text-[1.125rem]",
           isInk ? "text-cream" : "text-ink",
         )}
       >

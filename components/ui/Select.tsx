@@ -1,5 +1,6 @@
 import { forwardRef, type SelectHTMLAttributes } from "react";
 import { ChevronDown } from "lucide-react";
+import { controlBaseClasses } from "@/components/ui/controlStyles";
 import { cn } from "@/lib/utils";
 
 export interface SelectOption {
@@ -13,6 +14,7 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   hasError?: boolean;
 }
 
+/** Accessible native select dropdown with a custom Chevron indicator. */
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
   { options, placeholder, hasError = false, className, children, ...props },
   ref,
@@ -22,12 +24,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
       <select
         ref={ref}
         aria-invalid={hasError || undefined}
-        className={cn(
-          "h-[52px] w-full appearance-none rounded-input border-2 border-ink bg-white pr-11 pl-4 text-[16px] text-ink",
-          "transition-colors duration-150",
-          "disabled:cursor-not-allowed disabled:bg-sand/60 disabled:opacity-70",
-          className,
-        )}
+        className={cn(controlBaseClasses, "h-[3.25rem] appearance-none pr-11 pl-4", className)}
         {...props}
       >
         {placeholder ? (
@@ -37,10 +34,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
         ) : null}
         {options
           ? options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))
           : children}
       </select>
       <ChevronDown
@@ -50,4 +47,3 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
     </div>
   );
 });
-

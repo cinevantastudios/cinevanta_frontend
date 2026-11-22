@@ -6,34 +6,31 @@ import { Marquee } from "@/components/home/Marquee";
 import { Partners } from "@/components/home/Partners";
 import { Services } from "@/components/home/Services";
 import { WorkPreview } from "@/components/home/WorkPreview";
-import { JsonLd } from "@/components/seo/JsonLd";
-import { getAds, getEvents, getWork } from "@/lib/api";
-import { site } from "@/lib/site";
+import { JsonLd, buildOrganizationJsonLd } from "@/components/seo/JsonLd";
+import { getAds, getEvents, getWork } from "@/lib/api-client";
+import { displayLimits, site } from "@/lib/site";
 
+/** Revalidate home page every 60s (matches PAGE_REVALIDATE_SECONDS in cache_logics/revalidation-cache.ts). */
+export const revalidate = 60;
+
+/**
+ * Cinevanta Studios landing page.
+ * Fetches ads, events, and featured work in parallel and passes a deterministic render timestamp
+ * to AdStrip to prevent SSR/client clock hydration mismatches.
+ */
 export default async function HomePage() {
+  const renderedAtIso = new Date().toISOString();
   const [ads, upcomingEvents, pastEvents, work] = await Promise.all([
     getAds(),
     getEvents("upcoming"),
     getEvents("past"),
-    getWork(undefined, 1, 3),
+    getWork(undefined, 1, displayLimits.homeWorkPreviewCount),
   ]);
-
-  const organizationLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: site.name,
-    url: site.url,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Delhi",
-      addressCountry: "IN",
-    },
-  };
 
   return (
     <>
-      <JsonLd data={organizationLd} />
-      <AdStrip ads={ads} />
+      <JsonLd data={buildOrganizationJsonLd()} />
+      <AdStrip ads={ads} renderedAtIso={renderedAtIso} />
       <main id="main-content">
         <Hero showreel={site.showreel} />
         <Marquee />

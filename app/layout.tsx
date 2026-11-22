@@ -3,7 +3,7 @@ import { Archivo, DM_Mono, Inter } from "next/font/google";
 import { ToastProvider } from "@/components/ui";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
-import { getEvents } from "@/lib/api";
+import { getEvents } from "@/lib/api-client";
 import { content } from "@/lib/content";
 import { site } from "@/lib/site";
 import "./globals.css";
@@ -29,6 +29,9 @@ const dmMono = DM_Mono({
   display: "swap",
 });
 
+/** Revalidate root layout event lookup every 60 seconds so static pages stay edge-cached. */
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
@@ -38,7 +41,7 @@ export const metadata: Metadata = {
   description: content.meta.defaultDescription,
   openGraph: {
     type: "website",
-    locale: "en_IN",
+    locale: site.ogLocale,
     url: site.url,
     siteName: site.name,
     title: content.meta.defaultTitle,
@@ -63,13 +66,13 @@ export default async function RootLayout({
 
   return (
     <html
-      lang="en"
+      lang={site.htmlLang}
       className={`${archivo.variable} ${inter.variable} ${dmMono.variable}`}
     >
       <body className="flex min-h-screen flex-col bg-cream text-ink antialiased">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[120] focus:rounded-pill focus:border-2 focus:border-ink focus:bg-yellow focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-ink"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[var(--z-skip-link)] focus:rounded-pill focus:border-2 focus:border-ink focus:bg-yellow focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-ink"
         >
           {content.nav.skipToContent}
         </a>

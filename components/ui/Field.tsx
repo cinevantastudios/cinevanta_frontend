@@ -43,7 +43,7 @@ export function Field({
         <label
           htmlFor={id}
           className={cn(
-            "text-[14px] font-semibold leading-snug",
+            "text-[0.875rem] font-semibold leading-snug",
             isInk ? "text-cream" : "text-ink",
           )}
         >
@@ -85,7 +85,7 @@ export function Field({
         <p
           id={`${id}-helper`}
           className={cn(
-            "text-[14px] leading-snug",
+            "text-[0.875rem] leading-snug",
             isInk ? "text-muted-on-ink" : "text-muted",
           )}
         >
@@ -99,7 +99,7 @@ export function Field({
           role="alert"
           aria-live="polite"
           className={cn(
-            "flex items-start gap-2 text-[14px] font-medium leading-snug",
+            "flex items-start gap-2 text-[0.875rem] font-medium leading-snug",
             isInk ? "text-yellow" : "text-ink",
           )}
         >

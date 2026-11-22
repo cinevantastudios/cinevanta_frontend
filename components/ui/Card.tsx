@@ -16,12 +16,13 @@ const toneClasses: Record<CardTone, string> = {
   ink: "bg-ink text-cream",
 };
 
+/** Flat 2px-bordered content card supporting five studio surface tones and automatic ink surface focus styling. */
 export function Card({ tone = "white", className, children, ...props }: CardProps) {
   return (
     <div
       data-surface={tone === "ink" ? "ink" : undefined}
       className={cn(
-        "flex min-h-[270px] flex-col justify-between rounded-card border-2 border-ink p-[26px]",
+        "flex min-h-[16.875rem] flex-col justify-between rounded-card border-2 border-ink p-[1.625rem]",
         toneClasses[tone],
         className,
       )}

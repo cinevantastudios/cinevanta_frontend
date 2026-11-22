@@ -19,7 +19,7 @@ export function TicketCard({
   return (
     <article
       className={cn(
-        "relative flex w-full max-w-[760px] flex-col overflow-hidden rounded-card border-2 border-ink bg-yellow text-ink",
+        "relative flex w-full max-w-[47.5rem] flex-col overflow-hidden rounded-card border-2 border-ink bg-yellow text-ink",
         "sm:flex-row sm:-rotate-[1.5deg]",
         "transition-transform duration-[250ms] ease-[var(--ease-move)]",
         "sm:hover:-translate-y-1 sm:hover:-rotate-[0.5deg] motion-reduce:transform-none",
@@ -34,17 +34,17 @@ export function TicketCard({
           </span>
           <div className="flex items-end gap-4 pt-1">
             <span className="font-display-expanded text-ticket-date text-ink">{day}</span>
-            <span className="font-display-expanded pb-1.5 text-[24px] leading-none text-ink sm:text-[30px]">
+            <span className="font-display-expanded pb-1.5 text-[1.5rem] leading-none text-ink sm:text-[1.875rem]">
               {monthYear}
             </span>
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <h3 className="font-display-expanded text-[20px] leading-tight text-ink sm:text-[22px]">
+          <h3 className="font-display-expanded text-[1.25rem] leading-tight text-ink sm:text-[1.375rem]">
             {event.title}
           </h3>
-          <p className="text-[14px] font-medium text-ink/85">
+          <p className="text-[0.875rem] font-medium text-ink/85">
             {event.venue} • {time}
           </p>
         </div>
@@ -57,20 +57,20 @@ export function TicketCard({
       >
         <span
           className={cn(
-            "absolute -top-3.5 -left-3.5 h-6 w-6 rounded-full border-2 border-ink sm:-top-3.5 sm:-left-[13px]",
+            "absolute -top-3.5 -left-3.5 h-6 w-6 rounded-full border-2 border-ink sm:-top-3.5 sm:-left-[0.8125rem]",
             notchColorClass,
           )}
         />
         <span
           className={cn(
-            "absolute -top-3.5 -right-3.5 h-6 w-6 rounded-full border-2 border-ink sm:top-auto sm:right-auto sm:-bottom-3.5 sm:-left-[13px]",
+            "absolute -top-3.5 -right-3.5 h-6 w-6 rounded-full border-2 border-ink sm:top-auto sm:right-auto sm:-bottom-3.5 sm:-left-[0.8125rem]",
             notchColorClass,
           )}
         />
       </div>
 
       {/* Right ticket stub */}
-      <div className="flex shrink-0 items-center justify-center bg-cream p-6 sm:w-[150px] sm:p-5">
+      <div className="flex shrink-0 items-center justify-center bg-cream p-6 sm:w-[9.375rem] sm:p-5">
         <RegisterButton
           eventId={event.id}
           eventTitle={event.title}

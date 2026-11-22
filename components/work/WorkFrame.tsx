@@ -1,6 +1,6 @@
-import Image from "next/image";
-import { Placeholder, type PlaceholderTone } from "@/components/ui";
+import { Placeholder, SafeImage, type PlaceholderTone } from "@/components/ui";
 import { content } from "@/lib/content";
+import { mediaConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import type { WorkItem } from "@/types/api";
 
@@ -18,10 +18,14 @@ const FRAME_ROTATIONS = [
   "xs:-rotate-1",
 ] as const;
 
+/**
+ * Portfolio card rendered either as an interactive tilted still button or an intentional
+ * placeholder slot when fewer than three featured items exist.
+ */
 export function WorkFrame({
   item,
   index,
-  placeholderLabel = "[PROJECT STILL]",
+  placeholderLabel = content.work.placeholderStillLabel,
   placeholderTone = "yellow",
   onSelect,
 }: WorkFrameProps) {
@@ -30,7 +34,7 @@ export function WorkFrame({
   if (!item) {
     return (
       <div className={cn("flex flex-col gap-4", rotationClass)}>
-        <div className="aspect-[4/5] w-full overflow-hidden rounded-frame border-2 border-ink md:aspect-auto md:h-[400px]">
+        <div className="aspect-[4/5] w-full overflow-hidden rounded-frame border-2 border-ink md:aspect-auto md:h-[25rem]">
           <Placeholder
             tone={placeholderTone}
             ratio="auto"
@@ -39,9 +43,9 @@ export function WorkFrame({
           />
         </div>
         <div className="space-y-1">
-          <p className="font-meta text-muted">[Category • YYYY]</p>
-          <p className="font-display-expanded text-[24px] leading-tight text-ink md:text-[28px]">
-            [Project Title]
+          <p className="font-meta text-muted">{content.work.placeholderMetaLabel}</p>
+          <p className="font-display-expanded text-[1.5rem] leading-tight text-ink md:text-[1.75rem]">
+            {content.work.placeholderTitleLabel}
           </p>
         </div>
       </div>
@@ -49,7 +53,6 @@ export function WorkFrame({
   }
 
   const categoryLabel = content.work.categoryLabels[item.category];
-  const isDataUri = item.imageUrl.startsWith("data:");
 
   return (
     <button
@@ -62,25 +65,26 @@ export function WorkFrame({
         rotationClass,
       )}
     >
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-frame border-2 border-ink bg-white md:aspect-auto md:h-[400px]">
-        <Image
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-frame border-2 border-ink bg-white md:aspect-auto md:h-[25rem]">
+        <SafeImage
           src={item.imageUrl}
           alt={`${item.title} — ${categoryLabel} (${item.year})`}
           fill
-          unoptimized={isDataUri}
-          sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+          sizes={mediaConfig.gridCardSizes}
           className="object-cover"
+          fallbackLabel={placeholderLabel}
+          fallbackTone={placeholderTone}
+          fallbackRatio="auto"
         />
       </div>
       <div className="space-y-1">
         <p className="font-meta text-muted">
           {categoryLabel} • {item.year}
         </p>
-        <h3 className="font-display-expanded text-[24px] leading-tight text-ink group-hover:underline group-hover:decoration-2 group-hover:underline-offset-4 md:text-[28px]">
+        <h3 className="font-display-expanded text-[1.5rem] leading-tight text-ink group-hover:underline group-hover:decoration-2 group-hover:underline-offset-4 md:text-[1.75rem]">
           {item.title}
         </h3>
       </div>
     </button>
   );
 }
-

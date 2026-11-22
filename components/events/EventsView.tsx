@@ -7,6 +7,7 @@ import { EventCard } from "@/components/events/EventCard";
 import { NotifyForm } from "@/components/events/NotifyForm";
 import { PastEventRow } from "@/components/events/PastEventRow";
 import { content } from "@/lib/content";
+import { routes } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import type { EventItem, EventStatus } from "@/types/api";
 
@@ -16,6 +17,10 @@ export interface EventsViewProps {
   pastEvents: EventItem[];
 }
 
+/**
+ * Interactive upcoming/past events view.
+ * Receives server-parsed `initialStatus` so deep links render on first paint without tab flash.
+ */
 export function EventsView({
   initialStatus,
   upcomingEvents,
@@ -26,7 +31,7 @@ export function EventsView({
 
   function selectStatus(nextStatus: EventStatus) {
     setStatus(nextStatus);
-    router.replace(`/events?status=${nextStatus}`, { scroll: false });
+    router.replace(routes.eventsByStatus(nextStatus), { scroll: false });
   }
 
   return (
@@ -34,7 +39,7 @@ export function EventsView({
       {/* Segmented control */}
       <div
         role="tablist"
-        aria-label="Event status"
+        aria-label={content.events.tabsAriaLabel}
         className="inline-flex rounded-pill border-2 border-ink bg-white p-1"
       >
         {content.events.tabs.map((tab) => {
@@ -49,7 +54,7 @@ export function EventsView({
               aria-controls={`panel-${tab.value}`}
               onClick={() => selectStatus(tab.value)}
               className={cn(
-                "min-h-[44px] rounded-pill px-6 text-[14px] font-semibold transition-colors duration-200",
+                "min-h-[2.75rem] rounded-pill px-6 text-[0.875rem] font-semibold transition-colors duration-200",
                 active ? "bg-yellow text-ink" : "bg-transparent text-ink hover:bg-sand/60",
               )}
             >
@@ -73,8 +78,8 @@ export function EventsView({
               ))}
             </div>
           ) : (
-            <div className="max-w-[760px] space-y-6 rounded-card border-2 border-dashed border-ink bg-white p-7 md:p-9">
-              <p className="max-w-[56ch] text-[17px] leading-relaxed text-ink">
+            <div className="max-w-[47.5rem] space-y-6 rounded-card border-2 border-dashed border-ink bg-white p-7 md:p-9">
+              <p className="max-w-[56ch] text-[1.0625rem] leading-relaxed text-ink">
                 {content.events.emptyUpcoming}
               </p>
               <NotifyForm

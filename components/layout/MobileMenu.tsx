@@ -6,7 +6,8 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui";
 import { Wordmark } from "@/components/layout/Wordmark";
 import { content } from "@/lib/content";
-import { cn } from "@/lib/utils";
+import { routes } from "@/lib/site";
+import { cn, isNavRouteActive } from "@/lib/utils";
 
 export interface MobileMenuProps {
   open: boolean;
@@ -90,10 +91,10 @@ export function MobileMenu({
       ref={overlayRef}
       role="dialog"
       aria-modal="true"
-      aria-label="Site navigation"
+      aria-label={content.nav.mobileDialogLabel}
       aria-hidden={!open}
       className={cn(
-        "fixed inset-0 z-[60] flex flex-col justify-between bg-yellow text-ink md:hidden",
+        "fixed inset-0 z-[var(--z-dialog)] flex flex-col justify-between bg-yellow text-ink md:hidden",
         "transition-[clip-path,visibility] duration-[450ms] ease-[var(--ease-move)]",
         "motion-reduce:transition-none",
         open
@@ -103,10 +104,10 @@ export function MobileMenu({
     >
       <div className="flex h-20 items-center justify-between px-5">
         <Link
-          href="/"
+          href={routes.home}
           onClick={onClose}
           tabIndex={open ? 0 : -1}
-          aria-label="Cinevanta Studios home"
+          aria-label={content.nav.homeAriaLabel}
         >
           <Wordmark size="sm" tone="ink" />
         </Link>
@@ -122,12 +123,10 @@ export function MobileMenu({
         </button>
       </div>
 
-      <nav aria-label="Mobile navigation" className="flex flex-1 flex-col justify-center px-5">
+      <nav aria-label={content.nav.mobileNavLabel} className="flex flex-1 flex-col justify-center px-5">
         <ul className="space-y-4">
           {content.nav.links.map((item) => {
-            const isActive =
-              item.href !== "/#services" &&
-              (pathname === item.href || pathname.startsWith(`${item.href}/`));
+            const isActive = isNavRouteActive(pathname, item.href);
 
             return (
               <li key={item.href}>
@@ -166,7 +165,7 @@ export function MobileMenu({
           </Button>
         ) : (
           <Button
-            href="/events"
+            href={routes.events}
             variant="ink"
             withArrow
             fullWidth

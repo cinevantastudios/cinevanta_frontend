@@ -1,12 +1,39 @@
 import { z } from "zod";
 
+/** Centralized form field length and format constraints shared across schemas, copy, and UI counters. */
+export const formConstraints = {
+  nameMin: 2,
+  nameMax: 80,
+  messageMin: 10,
+  messageMax: 1000,
+  indianPhoneRegex: /^(?:\+91[\s-]?)?[6-9]\d{9}$/,
+} as const;
+
+/** Canonical list of studio production categories — single source of truth for work filters and enquiry types. */
+export const WORK_CATEGORIES = [
+  "film",
+  "advertising",
+  "live_event",
+  "fashion",
+  "corporate",
+] as const;
+
+/** Validates that a link URL is either an app-relative path ("/...") or an http(s) URL, blocking javascript: and protocol-relative "//" URLs. */
+export const safeLinkUrlSchema = z
+  .string()
+  .min(1)
+  .refine(
+    (value) => /^\/(?!\/)/.test(value) || /^https?:\/\//i.test(value),
+    { message: "Link URL must be a relative path or an http(s) URL." },
+  );
+
 export const adSchema = z.object({
   id: z.string().min(1),
   title: z.string().min(1),
   imageDesktop: z.string().min(1),
   imageMobile: z.string().min(1),
   alt: z.string(),
-  linkUrl: z.string().min(1),
+  linkUrl: safeLinkUrlSchema,
   label: z.string().min(1).optional(),
   startsAt: z.string().min(1),
   endsAt: z.string().min(1),
@@ -39,13 +66,7 @@ export const eventListSchema = z.array(eventSchema);
 
 export type EventItem = z.infer<typeof eventSchema>;
 
-export const workCategorySchema = z.enum([
-  "film",
-  "advertising",
-  "live_event",
-  "fashion",
-  "corporate",
-]);
+export const workCategorySchema = z.enum(WORK_CATEGORIES);
 
 export type WorkCategory = z.infer<typeof workCategorySchema>;
 
@@ -68,23 +89,18 @@ export const workResponseSchema = z.object({
 
 export type WorkResponse = z.infer<typeof workResponseSchema>;
 
-export const enquiryTypeSchema = z.enum([
-  "film",
-  "advertising",
-  "live_event",
-  "fashion",
-  "corporate",
-  "other",
-]);
+export const ENQUIRY_TYPES = [...WORK_CATEGORIES, "other"] as const;
+
+export const enquiryTypeSchema = z.enum(ENQUIRY_TYPES);
 
 export type EnquiryType = z.infer<typeof enquiryTypeSchema>;
 
 export const enquiryPayloadSchema = z.object({
-  name: z.string().min(2).max(80),
+  name: z.string().min(formConstraints.nameMin).max(formConstraints.nameMax),
   email: z.string().email(),
   phone: z.string().optional(),
   type: enquiryTypeSchema,
-  message: z.string().min(10).max(1000),
+  message: z.string().min(formConstraints.messageMin).max(formConstraints.messageMax),
   website: z.string(),
   startedAt: z.number(),
 });
@@ -116,5 +132,9 @@ export type ApiErrorResponse = z.infer<typeof apiErrorSchema>;
 
 export type ApiMutationResult =
   | { ok: true }
-  | { ok: false; error: string; fields?: Record<string, string> };
+  | { ok: false; error: string; fields?: Record<string, string>; rateLimited?: boolean };
 
+/** Result wrapper for paginated work fetches so callers can distinguish errors/aborts from empty categories. */
+export type WorkFetchResult =
+  | { ok: true; data: WorkResponse }
+  | { ok: false; aborted: boolean; error: string };

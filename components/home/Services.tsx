@@ -48,7 +48,7 @@ export function Services() {
                 href={service.href}
                 data-surface={isInk ? "ink" : undefined}
                 className={cn(
-                  "group flex min-h-[270px] w-[80%] shrink-0 snap-start flex-col justify-between rounded-card border-2 border-ink p-[26px]",
+                  "group flex min-h-[16.875rem] w-[80%] shrink-0 snap-start flex-col justify-between rounded-card border-2 border-ink p-[1.625rem]",
                   "transition-transform duration-200 ease-[var(--ease-move)]",
                   "hover:-translate-y-1.5 hover:rotate-[0.6deg] focus-visible:-translate-y-1.5 focus-visible:rotate-[0.6deg]",
                   "motion-reduce:transform-none",
@@ -73,7 +73,7 @@ export function Services() {
                   <h3 className="font-display-expanded text-h3">{service.title}</h3>
                   <p
                     className={cn(
-                      "text-[14px] leading-relaxed",
+                      "text-[0.875rem] leading-relaxed",
                       isInk ? "text-muted-on-ink" : "text-ink/80",
                     )}
                   >

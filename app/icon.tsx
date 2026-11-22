@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { site, themeColors } from "@/lib/site";
 
 export const size = {
   width: 64,
@@ -6,6 +7,7 @@ export const size = {
 };
 export const contentType = "image/png";
 
+/** Generates the dynamic favicon using centralized brand tokens and short mark. */
 export default function Icon() {
   return new ImageResponse(
     (
@@ -17,15 +19,15 @@ export default function Icon() {
           alignItems: "center",
           justifyContent: "center",
           borderRadius: "999px",
-          backgroundColor: "#FFC93C",
-          border: "4px solid #15110E",
-          color: "#15110E",
+          backgroundColor: themeColors.yellow,
+          border: `4px solid ${themeColors.ink}`,
+          color: themeColors.ink,
           fontSize: 30,
           fontWeight: 900,
           letterSpacing: "-0.04em",
         }}
       >
-        C*
+        {site.shortMark}
       </div>
     ),
     {
@@ -33,4 +35,3 @@ export default function Icon() {
     },
   );
 }
-

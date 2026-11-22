@@ -1,4 +1,5 @@
-import type { EnquiryType, WorkCategory } from "@/types/api";
+import { routes, site } from "@/lib/site";
+import { formConstraints, type EnquiryType, type WorkCategory } from "@/types/api";
 
 export type ServiceCardTone = "yellow" | "sand" | "white" | "ink";
 
@@ -10,22 +11,38 @@ export interface ServiceItem {
   href: string;
 }
 
+/** Single source of truth for work category display labels, reused across filters, cards, and dialogs. */
+const WORK_CATEGORY_LABELS: Record<WorkCategory, string> = {
+  film: "Film",
+  advertising: "Advertising",
+  live_event: "Live event",
+  fashion: "Fashion",
+  corporate: "Corporate",
+};
+
+/** Primary navigation links shared by desktop Navbar, MobileMenu, and derived footer navigation. */
+const PRIMARY_NAV_LINKS = [
+  { label: "Services", href: routes.services },
+  { label: "Work", href: routes.work },
+  { label: "Events", href: routes.events },
+  { label: "Contact", href: routes.contact },
+] as const;
+
+/** Centralized copy deck derived dynamically from `site` and `routes` to prevent duplicate literals. */
 export const content = {
   meta: {
-    titleTemplate: "%s | Cinevanta Studios",
-    defaultTitle: "Cinevanta Studios | Film, advertising and live events in Delhi",
+    titleTemplate: `%s | ${site.name}`,
+    defaultTitle: `${site.name} | Film, advertising and live events in ${site.locality}`,
     // Placeholder copy to confirm with proprietor
-    defaultDescription:
-      "Cinevanta Studios is a Delhi production house for films, advertising, live events, fashion shows and corporate events.",
+    defaultDescription: `${site.name} is a ${site.locality} production house for films, advertising, live events, fashion shows and corporate events.`,
   },
   nav: {
     skipToContent: "Skip to content",
-    links: [
-      { label: "Services", href: "/#services" },
-      { label: "Work", href: "/work" },
-      { label: "Events", href: "/events" },
-      { label: "Contact", href: "/contact" },
-    ],
+    homeAriaLabel: `${site.name} home`,
+    primaryNavLabel: "Primary",
+    mobileDialogLabel: "Site navigation",
+    mobileNavLabel: "Mobile navigation",
+    links: PRIMARY_NAV_LINKS,
     registerLabel: "Register",
     openMenuLabel: "Open menu",
     closeMenuLabel: "Close menu",
@@ -43,14 +60,14 @@ export const content = {
       `Slide ${index} of ${total}: ${title}`,
   },
   hero: {
-    kicker: "Film studio, Delhi",
+    kicker: `Film studio, ${site.locality}`,
     headlineLines: ["Films,", "brands &", "live moments."] as const,
     outlinedLineIndex: 2,
     lead: "We develop, produce and present films, advertising and live entertainment.",
-    primaryCta: { label: "See our work", href: "/work" },
-    secondaryCta: { label: "Upcoming events", href: "/events" },
-    badgeRingText: "FILMS ✦ ADS ✦ LIVE ✦ EST. 2026 ✦",
-    badgeCenter: "C*",
+    primaryCta: { label: "See our work", href: routes.work },
+    secondaryCta: { label: "Upcoming events", href: routes.events },
+    badgeRingText: `FILMS ✦ ADS ✦ LIVE ✦ EST. ${site.foundedYear} ✦`,
+    badgeCenter: site.shortMark,
     showreelLabel: "Showreel",
     showreelPlaceholder: "[SHOWREEL OR HERO STILL]",
     playShowreelLabel: "Play showreel",
@@ -69,35 +86,35 @@ export const content = {
         title: "Film & Content",
         description: "Films, web series, documentaries, shorts and music videos.",
         tone: "yellow",
-        href: "/work?category=film",
+        href: routes.workByCategory("film"),
       },
       {
         id: "advertising",
         title: "Advertising",
         description: "Ad films, TVCs, digital ads and branded content.",
         tone: "sand",
-        href: "/work?category=advertising",
+        href: routes.workByCategory("advertising"),
       },
       {
         id: "live_event",
         title: "Live Events & Sports",
         description: "Celebrity cricket, concerts, award nights and festivals.",
         tone: "white",
-        href: "/work?category=live_event",
+        href: routes.workByCategory("live_event"),
       },
       {
         id: "fashion",
         title: "Fashion & Talent",
         description: "Fashion shows, pageants, talent hunts and artist management.",
         tone: "ink",
-        href: "/work?category=fashion",
+        href: routes.workByCategory("fashion"),
       },
       {
         id: "corporate",
         title: "Corporate Events",
         description: "Launches, conferences, brand activations and summits.",
         tone: "yellow",
-        href: "/work?category=corporate",
+        href: routes.workByCategory("corporate"),
       },
     ] satisfies ServiceItem[],
   },
@@ -114,32 +131,28 @@ export const content = {
     loadedAnnouncement: (count: number) => `${count} more projects loaded`,
     playVideoLabel: "Play video",
     closeDialogLabel: "Close project details",
+    filterAriaLabel: "Filter projects by category",
+    placeholderStillLabel: "[PROJECT STILL]",
+    placeholderMetaLabel: "[Category • YYYY]",
+    placeholderTitleLabel: "[Project Title]",
     homePlaceholders: [
       { label: "[FILM POSTER OR STILL]", tone: "yellow" as const },
       { label: "[AD FILM FRAME]", tone: "ink" as const },
       { label: "[EVENT PHOTO]", tone: "white" as const },
     ],
+    categoryLabels: WORK_CATEGORY_LABELS,
     categories: [
       { value: "all" as const, label: "All" },
-      { value: "film" as const, label: "Film" },
-      { value: "advertising" as const, label: "Advertising" },
-      { value: "live_event" as const, label: "Live event" },
-      { value: "fashion" as const, label: "Fashion" },
-      { value: "corporate" as const, label: "Corporate" },
+      ...(Object.entries(WORK_CATEGORY_LABELS) as Array<[WorkCategory, string]>).map(
+        ([value, label]) => ({ value, label }),
+      ),
     ],
-    categoryLabels: {
-      film: "Film",
-      advertising: "Advertising",
-      live_event: "Live event",
-      fashion: "Fashion",
-      corporate: "Corporate",
-    } satisfies Record<WorkCategory, string>,
   },
   events: {
     heading: "Events",
     sticker: "Register to attend",
     pageTitle: "Events",
-    pageLead: "Live entertainment, sports, fashion and cultural nights from Cinevanta Studios.",
+    pageLead: `Live entertainment, sports, fashion and cultural nights from ${site.name}.`,
     upcomingBadge: "Upcoming",
     pastHeading: "Past events",
     galleryLink: "Gallery",
@@ -149,6 +162,7 @@ export const content = {
       "No events announced right now. Leave your details and we will message you when the next one opens.",
     emptyPast: "Past events will be listed here.",
     posterPlaceholder: "[EVENT POSTER]",
+    tabsAriaLabel: "Event status",
     tabs: [
       { value: "upcoming" as const, label: "Upcoming" },
       { value: "past" as const, label: "Past" },
@@ -160,7 +174,7 @@ export const content = {
   cta: {
     heading: "Got a story, a brand or a stage?",
     button: "Start a conversation",
-    href: "/contact",
+    href: routes.contact,
   },
   notify: {
     dialogTitle: "Registration opens soon",
@@ -171,7 +185,7 @@ export const content = {
     phoneLabel: "Phone",
     phonePlaceholder: "+91 98765 43210",
     helperText: "Enter an email address, a phone number, or both.",
-    consentLabel: "I agree to be contacted about Cinevanta events",
+    consentLabel: `I agree to be contacted about ${site.wordmark} events`,
     privacyNotePrefix: "Read our",
     submitLabel: "Notify me",
     submittingLabel: "Sending...",
@@ -202,11 +216,11 @@ export const content = {
       },
     },
     enquiryTypes: [
-      { value: "film", label: "Film" },
-      { value: "advertising", label: "Advertising" },
-      { value: "live_event", label: "Live event" },
+      { value: "film", label: WORK_CATEGORY_LABELS.film },
+      { value: "advertising", label: WORK_CATEGORY_LABELS.advertising },
+      { value: "live_event", label: WORK_CATEGORY_LABELS.live_event },
       { value: "fashion", label: "Fashion and talent" },
-      { value: "corporate", label: "Corporate" },
+      { value: "corporate", label: WORK_CATEGORY_LABELS.corporate },
       { value: "other", label: "Other" },
     ] satisfies Array<{ value: EnquiryType; label: string }>,
     submitLabel: "Send enquiry",
@@ -216,6 +230,7 @@ export const content = {
       `Thanks, ${name}. We received your enquiry and will reply by email or phone.`,
     errorMessage: (email: string) =>
       `We could not send your enquiry. Check your connection and try again, or email ${email}.`,
+    errorFallbackEmail: (email: string) => `You can also reach us directly at ${email}.`,
     sendAnotherLabel: "Send another enquiry",
   },
   about: {
@@ -229,12 +244,22 @@ export const content = {
   },
   legal: {
     privacyTitle: "Privacy",
+    privacyDescription: `Privacy policy for ${site.name}.`,
+    privacyBody: `This site does not set cookies or run third-party tracking scripts. Information submitted via the contact or event notification forms is used solely by ${site.name} to respond to enquiries or send event updates.`,
+    privacyQuestionsPrefix: "Questions:",
     termsTitle: "Terms",
+    termsDescription: `Terms of use for ${site.name}.`,
+    termsBody: `Published by ${site.name}, ${site.city}. Contact ${site.email} for enquiries regarding these terms.`,
     placeholder: "[Legal copy to be supplied]",
   },
   footer: {
-    tagline: "Films, advertising and live events from Delhi.",
+    tagline: `Films, advertising and live events from ${site.locality}.`,
     navHeading: "Navigate",
+    navLinks: [
+      ...PRIMARY_NAV_LINKS.slice(0, 3),
+      { label: "About", href: routes.about },
+      ...PRIMARY_NAV_LINKS.slice(3),
+    ],
     contactHeading: "Contact",
     notifyHeading: "Event updates",
     notifyLabel: "Email address",
@@ -245,21 +270,30 @@ export const content = {
   },
   errors: {
     notFoundTitle: "Scene not found.",
-    notFoundDescription: "This page is not in the script.",
+    notFoundDescription:
+      "This page is not in the script. Check the web address or jump to one of the sections below.",
     notFoundCta: "Back to home",
-    errorTitle: "Something broke on our side. Try again.",
+    notFoundLinks: [
+      { label: "Explore our work", href: routes.work },
+      { label: "Upcoming events", href: routes.events },
+      { label: "Contact us", href: routes.contact },
+    ],
+    errorTitle: "We hit a snag loading this view.",
+    errorDescription:
+      "Try refreshing this section. If it still does not load, return to the home page or reach out to us.",
     errorCta: "Try again",
+    errorHomeCta: "Back to home",
+    errorContactCta: "Contact us",
   },
   validation: {
-    nameRequired: "Enter your name (at least 2 characters).",
-    nameTooLong: "Keep your name under 80 characters.",
+    nameRequired: `Enter your name (at least ${formConstraints.nameMin} characters).`,
+    nameTooLong: `Keep your name under ${formConstraints.nameMax} characters.`,
     emailInvalid: "Enter an email like name@example.com.",
     phoneInvalid: "Enter a 10-digit Indian mobile number (with or without +91).",
     typeRequired: "Choose an enquiry type.",
-    messageShort: "Write at least 10 characters so we know how to help.",
-    messageTooLong: "Keep your message under 1000 characters.",
+    messageShort: `Write at least ${formConstraints.messageMin} characters so we know how to help.`,
+    messageTooLong: `Keep your message under ${formConstraints.messageMax} characters.`,
     contactRequired: "Enter an email address or a phone number.",
-    consentRequired: "Confirm that we can contact you about Cinevanta events.",
+    consentRequired: `Confirm that we can contact you about ${site.wordmark} events.`,
   },
 };
-

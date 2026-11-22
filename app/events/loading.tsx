@@ -7,7 +7,7 @@ export default function EventsLoading() {
         <Container className="space-y-10">
           <div className="space-y-4">
             <Skeleton className="h-14 w-56" />
-            <Skeleton className="h-6 w-full max-w-[480px]" />
+            <Skeleton className="h-6 w-full max-w-[30rem]" />
           </div>
           <Skeleton rounded="pill" className="h-12 w-60" />
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">

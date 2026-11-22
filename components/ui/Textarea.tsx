@@ -1,10 +1,12 @@
 import { forwardRef, type TextareaHTMLAttributes } from "react";
+import { controlBaseClasses } from "@/components/ui/controlStyles";
 import { cn } from "@/lib/utils";
 
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   hasError?: boolean;
 }
 
+/** Accessible vertically resizable textarea styled with the studio's 2px ink border. */
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
   { hasError = false, className, rows = 5, ...props },
   ref,
@@ -14,15 +16,8 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
       ref={ref}
       rows={rows}
       aria-invalid={hasError || undefined}
-      className={cn(
-        "min-h-[140px] w-full resize-y rounded-input border-2 border-ink bg-white p-4 text-[16px] leading-relaxed text-ink",
-        "placeholder:text-muted",
-        "transition-colors duration-150",
-        "disabled:cursor-not-allowed disabled:bg-sand/60 disabled:opacity-70",
-        className,
-      )}
+      className={cn(controlBaseClasses, "min-h-[8.75rem] resize-y p-4 leading-relaxed", className)}
       {...props}
     />
   );
 });
-

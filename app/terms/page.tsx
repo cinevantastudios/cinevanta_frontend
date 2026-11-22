@@ -1,31 +1,20 @@
 import type { Metadata } from "next";
-import { Container, Section } from "@/components/ui";
+import { LegalPageLayout } from "@/components/layout/LegalPageLayout";
 import { content } from "@/lib/content";
-import { site } from "@/lib/site";
+import { routes } from "@/lib/site";
+import { createPageMetadata } from "@/lib/utils";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: content.legal.termsTitle,
-  description: `Terms of use for ${site.name}.`,
-};
+  description: content.legal.termsDescription,
+  path: routes.terms,
+});
 
+/** Terms of use page rendered through the shared LegalPageLayout and centralized content deck. */
 export default function TermsPage() {
   return (
-    <main id="main-content">
-      <Section tone="cream" className="pt-12 pb-16 md:pt-16 lg:pt-20">
-        <Container className="max-w-[65ch] space-y-6">
-          <h1 className="font-display-expanded text-h1 text-ink">
-            {content.legal.termsTitle}
-          </h1>
-          <div className="space-y-4 rounded-card border-2 border-ink bg-white p-7 text-[16px] leading-relaxed text-ink">
-            <p className="font-semibold">{content.legal.placeholder}</p>
-            <p className="text-muted">
-              Published by {site.name}, {site.city}. Contact {site.email} for enquiries regarding
-              these terms.
-            </p>
-          </div>
-        </Container>
-      </Section>
-    </main>
+    <LegalPageLayout title={content.legal.termsTitle}>
+      <p className="text-muted">{content.legal.termsBody}</p>
+    </LegalPageLayout>
   );
 }
-

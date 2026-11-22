@@ -10,18 +10,21 @@ import { MobileMenu } from "@/components/layout/MobileMenu";
 import { NotifyDialog } from "@/components/events/NotifyDialog";
 import { RegisterButton } from "@/components/events/RegisterButton";
 import { content } from "@/lib/content";
-import { cn } from "@/lib/utils";
+import { routes, uiConfig } from "@/lib/site";
+import { cn, isNavRouteActive } from "@/lib/utils";
 
 export interface NavbarProps {
   nextEvent?: { id: string; title: string } | null;
 }
 
 export function Navbar({ nextEvent = null }: NavbarProps) {
-  const pathname = usePathname() ?? "/";
+  const pathname = usePathname() ?? routes.home;
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileNotifyOpen, setMobileNotifyOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const scrolledRef = useRef(false);
+  const hiddenRef = useRef(false);
   const lastScrollYRef = useRef(0);
   const menuTriggerRef = useRef<HTMLButtonElement | null>(null);
 
@@ -29,6 +32,7 @@ export function Navbar({ nextEvent = null }: NavbarProps) {
     setMenuOpen(false);
   }, []);
 
+  // Track scroll direction while skipping redundant React state updates on unchanged frames.
   useEffect(() => {
     lastScrollYRef.current = window.scrollY;
 
@@ -36,14 +40,24 @@ export function Navbar({ nextEvent = null }: NavbarProps) {
       const currentY = Math.max(0, window.scrollY);
       const delta = currentY - lastScrollYRef.current;
 
-      setScrolled(currentY > 8);
+      const nextScrolled = currentY > uiConfig.navScrollBorderThresholdPx;
+      if (nextScrolled !== scrolledRef.current) {
+        scrolledRef.current = nextScrolled;
+        setScrolled(nextScrolled);
+      }
 
-      if (menuOpen || currentY <= 8) {
-        setHidden(false);
-      } else if (delta > 6 && currentY > 80) {
-        setHidden(true);
-      } else if (delta < -6) {
-        setHidden(false);
+      let nextHidden = hiddenRef.current;
+      if (menuOpen || currentY <= uiConfig.navScrollBorderThresholdPx) {
+        nextHidden = false;
+      } else if (delta > uiConfig.navScrollDeltaPx && currentY > uiConfig.navHideThresholdPx) {
+        nextHidden = true;
+      } else if (delta < -uiConfig.navScrollDeltaPx) {
+        nextHidden = false;
+      }
+
+      if (nextHidden !== hiddenRef.current) {
+        hiddenRef.current = nextHidden;
+        setHidden(nextHidden);
       }
 
       lastScrollYRef.current = currentY;
@@ -60,7 +74,7 @@ export function Navbar({ nextEvent = null }: NavbarProps) {
       <header
         data-hidden={hidden && !menuOpen ? "true" : "false"}
         className={cn(
-          "sticky top-0 z-[50] h-20 w-full bg-cream",
+          "sticky top-0 z-[var(--z-navbar)] h-20 w-full bg-cream",
           "transition-[transform,border-color] duration-200 ease-[var(--ease-move)]",
           "motion-reduce:transition-none",
           scrolled ? "border-b border-ink" : "border-b border-transparent",
@@ -69,18 +83,16 @@ export function Navbar({ nextEvent = null }: NavbarProps) {
       >
         <Container className="flex h-full items-center justify-between gap-6">
           <Link
-            href="/"
-            aria-label="Cinevanta Studios home"
-            className="inline-flex min-h-[44px] items-center"
+            href={routes.home}
+            aria-label={content.nav.homeAriaLabel}
+            className="inline-flex min-h-[40px] items-center"
           >
             <Wordmark size="sm" tone="ink" />
           </Link>
 
-          <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
+          <nav aria-label={content.nav.primaryNavLabel} className="hidden items-center gap-8 md:flex">
             {content.nav.links.map((item) => {
-              const isActive =
-                item.href !== "/#services" &&
-                (pathname === item.href || pathname.startsWith(`${item.href}/`));
+              const isActive = isNavRouteActive(pathname, item.href);
 
               return (
                 <Link
@@ -88,7 +100,7 @@ export function Navbar({ nextEvent = null }: NavbarProps) {
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "inline-flex min-h-[44px] items-center text-[15px] font-medium text-ink transition-opacity duration-150 hover:opacity-75",
+                    "inline-flex min-h-[40px] items-center text-[13.5px] font-medium text-ink transition-opacity duration-150 hover:opacity-75",
                     isActive && "underline decoration-ink decoration-2 underline-offset-[6px]",
                   )}
                 >
@@ -102,7 +114,7 @@ export function Navbar({ nextEvent = null }: NavbarProps) {
             <RegisterButton
               eventId={nextEvent?.id}
               eventTitle={nextEvent?.title}
-              hrefFallback="/events"
+              hrefFallback={routes.events}
               variant="yellow"
               label={content.nav.registerLabel}
             />

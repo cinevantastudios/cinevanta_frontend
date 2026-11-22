@@ -1,33 +1,36 @@
 import type { Metadata } from "next";
 import { Container, Section } from "@/components/ui";
 import { EventsView } from "@/components/events/EventsView";
-import { JsonLd } from "@/components/seo/JsonLd";
-import { getEvents } from "@/lib/api";
+import { JsonLd, buildEventJsonLd } from "@/components/seo/JsonLd";
+import { getEvents } from "@/lib/api-client";
 import { content } from "@/lib/content";
-import { site } from "@/lib/site";
+import { routes } from "@/lib/site";
+import { createPageMetadata } from "@/lib/utils";
 import type { EventStatus } from "@/types/api";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: content.events.pageTitle,
   description: content.events.pageLead,
-  openGraph: {
-    title: `${content.events.pageTitle} | Cinevanta Studios`,
-    description: content.events.pageLead,
-    url: "/events",
-  },
-};
+  path: routes.events,
+});
 
 interface EventsPageProps {
-  searchParams: Promise<{ status?: string | string[] }>;
+  searchParams?: Promise<{ status?: string | string[] }>;
 }
 
+/** Parses the requested ?status= query param on the server so deep links render with zero tab flash. */
 function parseStatus(raw: string | string[] | undefined): EventStatus {
   const value = Array.isArray(raw) ? raw[0] : raw;
   return value === "past" ? "past" : "upcoming";
 }
 
+/**
+ * Events archive and upcoming schedule page.
+ * Reads `searchParams` on the server for instant deep-link tab rendering while `getEvents`
+ * caches upstream API responses via `cache_logics/revalidation-cache`.
+ */
 export default async function EventsPage({ searchParams }: EventsPageProps) {
-  const params = await searchParams;
+  const params = searchParams ? await searchParams : {};
   const initialStatus = parseStatus(params.status);
 
   const [upcomingEvents, pastEvents] = await Promise.all([
@@ -35,33 +38,10 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
     getEvents("past"),
   ]);
 
-  const upcomingJsonLd = upcomingEvents.map((event) => ({
-    "@context": "https://schema.org",
-    "@type": "Event",
-    name: event.title,
-    startDate: event.date,
-    eventStatus: "https://schema.org/EventScheduled",
-    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    location: {
-      "@type": "Place",
-      name: event.venue,
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: event.city,
-        addressCountry: "IN",
-      },
-    },
-    organizer: {
-      "@type": "Organization",
-      name: site.name,
-      url: site.url,
-    },
-  }));
-
   return (
     <main id="main-content">
-      {upcomingJsonLd.map((ld, idx) => (
-        <JsonLd key={upcomingEvents[idx]?.id ?? idx} data={ld} />
+      {upcomingEvents.map((event) => (
+        <JsonLd key={event.id} data={buildEventJsonLd(event)} />
       ))}
       <Section tone="cream" className="pt-12 pb-16 md:pt-16 lg:pt-20">
         <Container className="space-y-10">
@@ -69,7 +49,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
             <h1 className="font-display-expanded text-h1 text-ink">
               {content.events.pageTitle}
             </h1>
-            <p className="text-[18px] leading-[1.6] text-muted">{content.events.pageLead}</p>
+            <p className="text-[1.125rem] leading-[1.6] text-muted">{content.events.pageLead}</p>
           </div>
 
           <EventsView

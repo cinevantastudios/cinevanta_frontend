@@ -1,13 +1,15 @@
 import { ImageResponse } from "next/og";
-import { site } from "@/lib/site";
+import { content } from "@/lib/content";
+import { site, themeColors } from "@/lib/site";
 
-export const alt = `${site.name} — Film, advertising and live events in Delhi`;
+export const alt = content.meta.defaultTitle;
 export const size = {
   width: 1200,
   height: 630,
 };
 export const contentType = "image/png";
 
+/** Generates the 1200x630 Open Graph social share image from centralized site and theme tokens. */
 export default function OpenGraphImage() {
   return new ImageResponse(
     (
@@ -18,10 +20,10 @@ export default function OpenGraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#FFC93C",
-          color: "#15110E",
+          backgroundColor: themeColors.yellow,
+          color: themeColors.ink,
           padding: "56px 64px",
-          border: "16px solid #15110E",
+          border: `16px solid ${themeColors.ink}`,
         }}
       >
         <div
@@ -36,15 +38,15 @@ export default function OpenGraphImage() {
               display: "flex",
               padding: "10px 22px",
               borderRadius: "999px",
-              border: "3px solid #15110E",
-              backgroundColor: "#FFF6E3",
+              border: `3px solid ${themeColors.ink}`,
+              backgroundColor: themeColors.cream,
               fontSize: 22,
               fontWeight: 700,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
             }}
           >
-            FILM STUDIO, DELHI
+            {content.hero.kicker.toUpperCase()}
           </div>
           <div
             style={{
@@ -54,14 +56,14 @@ export default function OpenGraphImage() {
               width: 84,
               height: 84,
               borderRadius: "999px",
-              border: "3px solid #15110E",
-              backgroundColor: "#15110E",
-              color: "#FFC93C",
+              border: `3px solid ${themeColors.ink}`,
+              backgroundColor: themeColors.ink,
+              color: themeColors.yellow,
               fontSize: 34,
               fontWeight: 900,
             }}
           >
-            C*
+            {site.shortMark}
           </div>
         </div>
 
@@ -81,16 +83,16 @@ export default function OpenGraphImage() {
               textTransform: "uppercase",
             }}
           >
-            CINEVANTA*
+            {`${site.wordmark.toUpperCase()}*`}
           </div>
           <div
             style={{
               fontSize: 30,
               fontWeight: 600,
-              color: "#15110E",
+              color: themeColors.ink,
             }}
           >
-            Films, advertising and live events from Delhi.
+            {content.footer.tagline}
           </div>
         </div>
       </div>
@@ -100,4 +102,3 @@ export default function OpenGraphImage() {
     },
   );
 }
-

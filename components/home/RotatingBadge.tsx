@@ -10,7 +10,7 @@ export function RotatingBadge({ className }: RotatingBadgeProps) {
     <div
       aria-hidden="true"
       className={cn(
-        "pointer-events-none relative inline-block h-[96px] w-[96px] rotate-[14deg] select-none lg:h-[150px] lg:w-[150px]",
+        "pointer-events-none relative inline-block h-[86px] w-[86px] rotate-[14deg] select-none lg:h-[135px] lg:w-[135px]",
         className,
       )}
     >
@@ -27,17 +27,17 @@ export function RotatingBadge({ className }: RotatingBadgeProps) {
           />
         </defs>
 
-        {/* Yellow stamp disc with 2px ink stroke */}
-        <circle cx="75" cy="75" r="73" fill="#FFC93C" stroke="#15110E" strokeWidth="2" />
+        {/* Yellow stamp disc with 2px ink stroke referencing CSS theme variables */}
+        <circle cx="75" cy="75" r="73" fill="var(--yellow)" stroke="var(--ink)" strokeWidth="2" />
 
         {/* Rotating circular text ring */}
         <g className="animate-badge-spin origin-center" style={{ transformOrigin: "75px 75px" }}>
           <text
-            fill="#15110E"
+            fill="var(--ink)"
             fontSize="12"
             fontWeight="500"
             letterSpacing="3"
-            style={{ fontFamily: "var(--font-dm-mono), ui-monospace, monospace" }}
+            style={{ fontFamily: "var(--font-mono)" }}
           >
             <textPath href="#cinevanta-badge-circle" startOffset="0%">
               {content.hero.badgeRingText}
@@ -51,11 +51,11 @@ export function RotatingBadge({ className }: RotatingBadgeProps) {
           y="77"
           textAnchor="middle"
           dominantBaseline="central"
-          fill="#15110E"
+          fill="var(--ink)"
           fontSize="38"
           fontWeight="900"
           style={{
-            fontFamily: 'var(--font-archivo), "Arial Black", Impact, sans-serif',
+            fontFamily: "var(--font-display)",
             fontStretch: "125%",
           }}
         >

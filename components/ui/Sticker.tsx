@@ -12,11 +12,12 @@ const rotationClasses: Record<NonNullable<StickerProps["rotation"]>, string> = {
   0: "rotate-0",
 };
 
+/** Tilted yellow pill badge used beside section headings or on ad slides. */
 export function Sticker({ children, rotation = -4, className, ...props }: StickerProps) {
   return (
     <span
       className={cn(
-        "font-meta inline-flex items-center rounded-pill border-2 border-ink bg-yellow px-4 py-[7px] text-ink select-none",
+        "font-meta inline-flex items-center rounded-pill border-2 border-ink bg-yellow px-4 py-[6.3px] text-ink select-none",
         rotationClasses[rotation],
         className,
       )}

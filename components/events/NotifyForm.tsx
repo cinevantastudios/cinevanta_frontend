@@ -2,22 +2,24 @@
 
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
 import {
   Button,
   Checkbox,
   Field,
   Input,
+  StatusBanner,
   getFieldDescribedBy,
 } from "@/components/ui";
-import { postSubscriber } from "@/lib/api";
 import { content } from "@/lib/content";
+import { useSubscriberSubmission } from "@/lib/hooks";
+import { routes } from "@/lib/site";
+import { cn } from "@/lib/utils";
 import {
   inlineNotifySchema,
+  mapZodFieldErrors,
   normalizePhone,
   notifyFormSchema,
 } from "@/lib/validators";
-import { cn } from "@/lib/utils";
 import type { SubscriberSource } from "@/types/api";
 
 export interface NotifyFormProps {
@@ -36,6 +38,10 @@ interface FieldErrors {
   consent?: string;
 }
 
+/**
+ * Reusable event notification signup form rendered either inside NotifyDialog (with consent checkbox)
+ * or inline inside EventsSection when no upcoming events are listed.
+ */
 export function NotifyForm({
   eventId,
   source,
@@ -49,17 +55,19 @@ export function NotifyForm({
   const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [succeeded, setSucceeded] = useState(false);
+
+  const { submitting, succeeded, submitError, setSubmitError, submitSubscriber } =
+    useSubscriberSubmission(onSuccess);
 
   const isInk = surface === "ink";
   const emailId = `${idPrefix}-email`;
   const phoneId = `${idPrefix}-phone`;
   const consentId = `${idPrefix}-consent`;
 
+  /** Validates inputs against dialog/inline Zod rules and submits via shared subscriber hook. */
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting) return;
     setSubmitError(null);
 
     const trimmedEmail = email.trim();
@@ -78,60 +86,34 @@ export function NotifyForm({
           });
 
     if (!parsed.success) {
-      const nextErrors: FieldErrors = {};
-      for (const issue of parsed.error.issues) {
-        const key = issue.path[0];
-        if (key === "email" && !nextErrors.email) nextErrors.email = issue.message;
-        if (key === "phone" && !nextErrors.phone) nextErrors.phone = issue.message;
-        if (key === "consent" && !nextErrors.consent) nextErrors.consent = issue.message;
-      }
-      setErrors(nextErrors);
+      setErrors(mapZodFieldErrors(parsed.error.issues, ["email", "phone", "consent"]));
       return;
     }
 
     setErrors({});
-    setSubmitting(true);
-
-    const result = await postSubscriber({
+    const outcome = await submitSubscriber({
       email: trimmedEmail || undefined,
       phone: normalizedPhone || undefined,
       eventId,
       source,
     });
 
-    setSubmitting(false);
-
-    if (!result.ok) {
-      if (result.fields) {
-        setErrors({
-          email: result.fields.email,
-          phone: result.fields.phone,
-        });
-      }
-      setSubmitError(result.error || content.notify.errorMessage);
-      return;
+    if (!outcome.ok && outcome.fields) {
+      setErrors({
+        email: outcome.fields.email,
+        phone: outcome.fields.phone,
+      });
     }
-
-    setSucceeded(true);
-    onSuccess?.();
   }
 
   if (succeeded) {
     return (
-      <div
-        role="status"
-        aria-live="polite"
-        className={cn(
-          "flex items-start gap-3 rounded-card border-2 p-5",
-          isInk
-            ? "border-yellow bg-ink text-cream"
-            : "border-ink bg-yellow text-ink",
-          className,
-        )}
-      >
-        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
-        <p className="text-[16px] font-semibold">{content.notify.successMessage}</p>
-      </div>
+      <StatusBanner
+        variant="success"
+        surface={surface}
+        message={content.notify.successMessage}
+        className={className}
+      />
     );
   }
 
@@ -207,7 +189,7 @@ export function NotifyForm({
             <span>
               {content.notify.consentLabel}.{" "}
               <Link
-                href="/privacy"
+                href={routes.privacy}
                 className="underline decoration-2 underline-offset-4 hover:opacity-80"
               >
                 {content.footer.privacyLabel}
@@ -217,10 +199,10 @@ export function NotifyForm({
           }
         />
       ) : (
-        <p className={cn("text-[14px]", isInk ? "text-muted-on-ink" : "text-muted")}>
+        <p className={cn("text-[0.875rem]", isInk ? "text-muted-on-ink" : "text-muted")}>
           {content.notify.helperText}{" "}
           <Link
-            href="/privacy"
+            href={routes.privacy}
             className="underline decoration-1 underline-offset-4 hover:opacity-80"
           >
             {content.footer.privacyLabel}
@@ -230,19 +212,7 @@ export function NotifyForm({
       )}
 
       {submitError ? (
-        <p
-          role="alert"
-          aria-live="polite"
-          className={cn(
-            "flex items-start gap-2 rounded-input border-2 p-3 text-[14px] font-medium",
-            isInk
-              ? "border-yellow bg-ink text-yellow"
-              : "border-ink bg-sand text-ink",
-          )}
-        >
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-          <span>{submitError}</span>
-        </p>
+        <StatusBanner variant="error" surface={surface} message={submitError} />
       ) : null}
 
       <div className="pt-1">
@@ -258,4 +228,3 @@ export function NotifyForm({
     </form>
   );
 }
-

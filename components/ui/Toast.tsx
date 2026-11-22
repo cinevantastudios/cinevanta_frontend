@@ -8,6 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { uiConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export interface ToastProps {
@@ -18,11 +19,12 @@ export interface ToastProps {
   className?: string;
 }
 
+/** Accessible status toast pill displayed above all overlays using `--z-toast`. */
 export function Toast({
   open,
   message,
   onClose,
-  duration = 4000,
+  duration = uiConfig.toastDurationMs,
   className,
 }: ToastProps) {
   useEffect(() => {
@@ -47,8 +49,8 @@ export function Toast({
       aria-live="polite"
       data-surface="ink"
       className={cn(
-        "fixed bottom-6 left-1/2 z-[110] -translate-x-1/2",
-        "flex max-w-[calc(100vw-32px)] items-center gap-3 rounded-pill border-2 border-ink bg-ink px-6 py-3 text-[14px] font-medium text-cream",
+        "fixed bottom-6 left-1/2 z-[var(--z-toast)] -translate-x-1/2",
+        "flex max-w-[calc(100vw-2rem)] items-center gap-3 rounded-pill border-2 border-ink bg-ink px-6 py-3 text-[0.875rem] font-medium text-cream",
         "animate-[toast-in_200ms_ease-out] motion-reduce:animate-none",
         className,
       )}
@@ -66,6 +68,7 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue | null>(null);
 
+/** Global toast provider mounted once in RootLayout to display non-blocking status messages. */
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toastState, setToastState] = useState<{
     open: boolean;
@@ -74,10 +77,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   }>({
     open: false,
     message: "",
-    duration: 4000,
+    duration: uiConfig.toastDurationMs,
   });
 
-  const showToast = useCallback((message: string, duration = 4000) => {
+  const showToast = useCallback((message: string, duration: number = uiConfig.toastDurationMs) => {
     setToastState({ open: true, message, duration });
   }, []);
 
@@ -98,6 +101,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   );
 }
 
+/** Returns imperative `showToast` and `dismissToast` actions from the global ToastProvider. */
 export function useToast(): ToastContextValue {
   const ctx = useContext(ToastContext);
   if (!ctx) {
@@ -105,4 +109,3 @@ export function useToast(): ToastContextValue {
   }
   return ctx;
 }
-

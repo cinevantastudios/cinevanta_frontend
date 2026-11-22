@@ -125,7 +125,7 @@ export function StyleguideInteractive() {
             }
           >
             <div className="space-y-4">
-              <p className="text-[15px] text-muted">
+              <p className="text-[0.9375rem] text-muted">
                 Dialog renders centered on desktop (max-width 480px) and as a full-width bottom
                 sheet on mobile. ESC and backdrop click close it and return focus to the trigger.
               </p>

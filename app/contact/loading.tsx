@@ -7,11 +7,11 @@ export default function ContactLoading() {
         <Container className="space-y-10">
           <div className="space-y-4">
             <Skeleton className="h-14 w-56" />
-            <Skeleton className="h-6 w-full max-w-[460px]" />
+            <Skeleton className="h-6 w-full max-w-[28.75rem]" />
           </div>
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
-            <Skeleton rounded="card" className="h-[520px] lg:col-span-7" />
-            <Skeleton rounded="card" className="h-[340px] lg:col-span-5" />
+            <Skeleton rounded="card" className="h-[32.5rem] lg:col-span-7" />
+            <Skeleton rounded="card" className="h-[21.25rem] lg:col-span-5" />
           </div>
         </Container>
       </Section>

@@ -10,8 +10,8 @@ export interface WordmarkProps {
 }
 
 const sizeClasses: Record<NonNullable<WordmarkProps["size"]>, string> = {
-  sm: "text-[24px] leading-none",
-  md: "text-[28px] leading-none",
+  sm: "text-[21.6px] leading-none",
+  md: "text-[25.2px] leading-none",
   giant: "text-wordmark-giant leading-[0.92]",
 };
 

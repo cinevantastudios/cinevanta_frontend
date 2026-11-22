@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode, Ref } from "react";
 import { Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, isExternalHref } from "@/lib/utils";
 
 export type ButtonVariant = "ink" | "yellow" | "outline";
 
@@ -29,6 +29,7 @@ type ButtonAsAnchor = ButtonBaseProps &
 
 export type ButtonProps = ButtonAsButton | ButtonAsAnchor;
 
+/** Custom crisp right-arrow icon rendered inside trailing circular button badges and service cards. */
 export function ArrowRightIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -60,11 +61,10 @@ const iconCircleClasses: Record<ButtonVariant, string> = {
   outline: "bg-ink text-cream group-hover:bg-yellow group-hover:text-ink",
 };
 
-function isExternalHref(href: string, explicitExternal?: boolean): boolean {
-  if (explicitExternal) return true;
-  return /^(https?:|mailto:|tel:)/.test(href);
-}
-
+/**
+ * Primary interactive pill button that renders either a semantic `<button>`, Next `<Link>`,
+ * or external `<a>` depending on whether `href` is passed. Enforces a 44px minimum touch target.
+ */
 export function Button(props: ButtonProps) {
   const {
     variant = "ink",
@@ -78,10 +78,10 @@ export function Button(props: ButtonProps) {
   const showTrailingCircle = withArrow && !loading;
 
   const baseClasses = cn(
-    "group inline-flex min-h-[44px] items-center justify-center gap-3 rounded-pill text-[14px] font-semibold leading-none select-none",
+    "group inline-flex min-h-[40px] items-center justify-center gap-3 rounded-pill text-[12.6px] font-semibold leading-none select-none",
     "transition-[background-color,color,border-color] duration-200 ease-[var(--ease-move)]",
     "disabled:pointer-events-none disabled:opacity-55",
-    showTrailingCircle ? "py-[14px] pl-6 pr-[14px]" : "px-6 py-[14px]",
+    showTrailingCircle ? "py-[12.5px] pl-6 pr-[12.5px]" : "px-6 py-[12.5px]",
     variantClasses[variant],
     fullWidth && "w-full",
     className,
@@ -162,4 +162,3 @@ export function Button(props: ButtonProps) {
     </button>
   );
 }
-

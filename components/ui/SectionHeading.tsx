@@ -10,6 +10,7 @@ export interface SectionHeadingProps {
   className?: string;
 }
 
+/** Standardized section heading combining display H2, optional tilted Sticker, and right-aligned action link. */
 export function SectionHeading({
   title,
   sticker,

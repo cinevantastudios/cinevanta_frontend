@@ -1,38 +1,26 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Play, Volume2, VolumeX } from "lucide-react";
 import { Placeholder } from "@/components/ui";
+import { reportError } from "@/lib/analytics";
 import { content } from "@/lib/content";
+import { usePrefersReducedMotion } from "@/lib/hooks";
 import type { ShowreelMedia } from "@/lib/site";
 
 export interface HeroMediaProps {
   showreel: ShowreelMedia | null;
 }
 
+/**
+ * 16:9 hero showreel container supporting muted autoplaying video, reduced-motion poster fallback,
+ * and an intentional studio placeholder when no showreel asset is configured yet.
+ */
 export function HeroMedia({ showreel }: HeroMediaProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [muted, setMuted] = useState(true);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const [playingReduced, setPlayingReduced] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-      return;
-    }
-
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(mediaQuery.matches);
-
-    function handleChange(event: MediaQueryListEvent) {
-      setReducedMotion(event.matches);
-    }
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => {
-      mediaQuery.removeEventListener("change", handleChange);
-    };
-  }, []);
+  const reducedMotion = usePrefersReducedMotion();
 
   function toggleMute() {
     if (!videoRef.current) return;
@@ -44,8 +32,8 @@ export function HeroMedia({ showreel }: HeroMediaProps) {
   function handleReducedPlay() {
     setPlayingReduced(true);
     window.setTimeout(() => {
-      void videoRef.current?.play().catch(() => {
-        // Autoplay or playback may be blocked by browser policy.
+      void videoRef.current?.play().catch((error) => {
+        reportError("HeroMedia", error, { operation: "play" });
       });
     }, 0);
   }
@@ -135,4 +123,3 @@ export function HeroMedia({ showreel }: HeroMediaProps) {
     </div>
   );
 }
-

@@ -1,3 +1,5 @@
+import { getEnvMockAdsMode, getEnvMockEventsMode } from "@/lib/env";
+import { displayLimits, routes, site, themeColors } from "@/lib/site";
 import type { Ad, EventItem, EventStatus, WorkCategory, WorkItem, WorkResponse } from "@/types/api";
 
 interface SvgPlaceholderOptions {
@@ -55,21 +57,21 @@ const ALL_MOCK_ADS: Ad[] = [
     imageDesktop: createSvgDataUri({
       width: 1920,
       height: 240,
-      background: "#FFC93C",
-      foreground: "#15110E",
+      background: themeColors.yellow,
+      foreground: themeColors.ink,
       title: "[Event Name 1]",
       subtitle: "[Venue, City] • [Date]",
     }),
     imageMobile: createSvgDataUri({
       width: 750,
       height: 300,
-      background: "#FFC93C",
-      foreground: "#15110E",
+      background: themeColors.yellow,
+      foreground: themeColors.ink,
       title: "[Event Name 1]",
       subtitle: "[Venue, City] • [Date]",
     }),
-    alt: "Promotional banner for [Event Name 1] by Cinevanta Studios",
-    linkUrl: "/events",
+    alt: `Promotional banner for [Event Name 1] by ${site.name}`,
+    linkUrl: routes.events,
     label: "Featured event",
     startsAt: "2025-01-01T00:00:00.000Z",
     endsAt: "2030-12-31T23:59:59.000Z",
@@ -81,23 +83,23 @@ const ALL_MOCK_ADS: Ad[] = [
     imageDesktop: createSvgDataUri({
       width: 1920,
       height: 240,
-      background: "#15110E",
-      foreground: "#FFF6E3",
-      accent: "#FFC93C",
+      background: themeColors.ink,
+      foreground: themeColors.cream,
+      accent: themeColors.yellow,
       title: "[Event Name 2]",
       subtitle: "[Venue, City] • [Date]",
     }),
     imageMobile: createSvgDataUri({
       width: 750,
       height: 300,
-      background: "#15110E",
-      foreground: "#FFF6E3",
-      accent: "#FFC93C",
+      background: themeColors.ink,
+      foreground: themeColors.cream,
+      accent: themeColors.yellow,
       title: "[Event Name 2]",
       subtitle: "[Venue, City] • [Date]",
     }),
-    alt: "Promotional banner for [Event Name 2] by Cinevanta Studios",
-    linkUrl: "/events",
+    alt: `Promotional banner for [Event Name 2] by ${site.name}`,
+    linkUrl: routes.events,
     label: "Featured event",
     startsAt: "2025-01-01T00:00:00.000Z",
     endsAt: "2030-12-31T23:59:59.000Z",
@@ -109,21 +111,21 @@ const ALL_MOCK_ADS: Ad[] = [
     imageDesktop: createSvgDataUri({
       width: 1920,
       height: 240,
-      background: "#FFE7B0",
-      foreground: "#15110E",
+      background: themeColors.sand,
+      foreground: themeColors.ink,
       title: "[Event Name 3]",
       subtitle: "[Venue, City] • [Date]",
     }),
     imageMobile: createSvgDataUri({
       width: 750,
       height: 300,
-      background: "#FFE7B0",
-      foreground: "#15110E",
+      background: themeColors.sand,
+      foreground: themeColors.ink,
       title: "[Event Name 3]",
       subtitle: "[Venue, City] • [Date]",
     }),
-    alt: "Promotional banner for [Event Name 3] by Cinevanta Studios",
-    linkUrl: "/events",
+    alt: `Promotional banner for [Event Name 3] by ${site.name}`,
+    linkUrl: routes.events,
     label: "Featured event",
     startsAt: "2025-01-01T00:00:00.000Z",
     endsAt: "2030-12-31T23:59:59.000Z",
@@ -138,12 +140,12 @@ const ALL_MOCK_EVENTS: EventItem[] = [
     title: "[Event Name 1]",
     date: "2027-06-15T18:30:00+05:30",
     venue: "[Venue, City]",
-    city: "Delhi",
+    city: site.locality,
     posterUrl: createSvgDataUri({
       width: 800,
       height: 1000,
-      background: "#FFC93C",
-      foreground: "#15110E",
+      background: themeColors.yellow,
+      foreground: themeColors.ink,
       title: "[Event Poster 1]",
       subtitle: "[Venue, City]",
     }),
@@ -156,12 +158,12 @@ const ALL_MOCK_EVENTS: EventItem[] = [
     title: "[Event Name 2]",
     date: "2027-09-20T19:00:00+05:30",
     venue: "[Venue, City]",
-    city: "Delhi",
+    city: site.locality,
     posterUrl: createSvgDataUri({
       width: 800,
       height: 1000,
-      background: "#FFE7B0",
-      foreground: "#15110E",
+      background: themeColors.sand,
+      foreground: themeColors.ink,
       title: "[Event Poster 2]",
       subtitle: "[Venue, City]",
     }),
@@ -174,13 +176,13 @@ const ALL_MOCK_EVENTS: EventItem[] = [
     title: "[Past Event Name 1]",
     date: "2025-11-10T18:00:00+05:30",
     venue: "[Venue, City]",
-    city: "Delhi",
+    city: site.locality,
     posterUrl: createSvgDataUri({
       width: 800,
       height: 1000,
-      background: "#15110E",
-      foreground: "#FFF6E3",
-      accent: "#FFC93C",
+      background: themeColors.ink,
+      foreground: themeColors.cream,
+      accent: themeColors.yellow,
       title: "[Past Event 1]",
       subtitle: "[Venue, City]",
     }),
@@ -193,12 +195,12 @@ const ALL_MOCK_EVENTS: EventItem[] = [
     title: "[Past Event Name 2]",
     date: "2025-08-04T19:30:00+05:30",
     venue: "[Venue, City]",
-    city: "Delhi",
+    city: site.locality,
     posterUrl: createSvgDataUri({
       width: 800,
       height: 1000,
-      background: "#FFFFFF",
-      foreground: "#15110E",
+      background: themeColors.white,
+      foreground: themeColors.ink,
       title: "[Past Event 2]",
       subtitle: "[Venue, City]",
     }),
@@ -211,12 +213,12 @@ const ALL_MOCK_EVENTS: EventItem[] = [
     title: "[Past Event Name 3]",
     date: "2025-03-18T17:00:00+05:30",
     venue: "[Venue, City]",
-    city: "Delhi",
+    city: site.locality,
     posterUrl: createSvgDataUri({
       width: 800,
       height: 1000,
-      background: "#FFE7B0",
-      foreground: "#15110E",
+      background: themeColors.sand,
+      foreground: themeColors.ink,
       title: "[Past Event 3]",
       subtitle: "[Venue, City]",
     }),
@@ -234,8 +236,8 @@ const ALL_MOCK_WORK: WorkItem[] = [
     imageUrl: createSvgDataUri({
       width: 800,
       height: 1000,
-      background: "#FFC93C",
-      foreground: "#15110E",
+      background: themeColors.yellow,
+      foreground: themeColors.ink,
       title: "[FILM POSTER OR STILL]",
       subtitle: "FILM • 2026",
     }),
@@ -249,9 +251,9 @@ const ALL_MOCK_WORK: WorkItem[] = [
     imageUrl: createSvgDataUri({
       width: 800,
       height: 1000,
-      background: "#15110E",
-      foreground: "#FFF6E3",
-      accent: "#FFC93C",
+      background: themeColors.ink,
+      foreground: themeColors.cream,
+      accent: themeColors.yellow,
       title: "[AD FILM FRAME]",
       subtitle: "ADVERTISING • 2026",
     }),
@@ -265,8 +267,8 @@ const ALL_MOCK_WORK: WorkItem[] = [
     imageUrl: createSvgDataUri({
       width: 800,
       height: 1000,
-      background: "#FFFFFF",
-      foreground: "#15110E",
+      background: themeColors.white,
+      foreground: themeColors.ink,
       title: "[EVENT PHOTO]",
       subtitle: "LIVE EVENT • 2026",
     }),
@@ -280,8 +282,8 @@ const ALL_MOCK_WORK: WorkItem[] = [
     imageUrl: createSvgDataUri({
       width: 800,
       height: 1000,
-      background: "#FFE7B0",
-      foreground: "#15110E",
+      background: themeColors.sand,
+      foreground: themeColors.ink,
       title: "[RUNWAY FRAME]",
       subtitle: "FASHION • 2025",
     }),
@@ -295,8 +297,8 @@ const ALL_MOCK_WORK: WorkItem[] = [
     imageUrl: createSvgDataUri({
       width: 800,
       height: 1000,
-      background: "#FFC93C",
-      foreground: "#15110E",
+      background: themeColors.yellow,
+      foreground: themeColors.ink,
       title: "[STAGE STILL]",
       subtitle: "CORPORATE • 2025",
     }),
@@ -310,9 +312,9 @@ const ALL_MOCK_WORK: WorkItem[] = [
     imageUrl: createSvgDataUri({
       width: 800,
       height: 1000,
-      background: "#15110E",
-      foreground: "#FFF6E3",
-      accent: "#FFC93C",
+      background: themeColors.ink,
+      foreground: themeColors.cream,
+      accent: themeColors.yellow,
       title: "[SHORT FILM STILL]",
       subtitle: "FILM • 2025",
     }),
@@ -326,8 +328,8 @@ const ALL_MOCK_WORK: WorkItem[] = [
     imageUrl: createSvgDataUri({
       width: 800,
       height: 1000,
-      background: "#FFFFFF",
-      foreground: "#15110E",
+      background: themeColors.white,
+      foreground: themeColors.ink,
       title: "[TVC FRAME]",
       subtitle: "ADVERTISING • 2025",
     }),
@@ -335,16 +337,18 @@ const ALL_MOCK_WORK: WorkItem[] = [
   },
 ];
 
+/** Returns mock ads controlled by NEXT_PUBLIC_MOCK_ADS ("0" for none, "3" for active set). */
 export function getMockAds(): Ad[] {
-  const mode = process.env.NEXT_PUBLIC_MOCK_ADS ?? "3";
+  const mode = getEnvMockAdsMode();
   if (mode === "0") {
     return [];
   }
   return ALL_MOCK_ADS.slice(0, 3);
 }
 
+/** Returns mock events controlled by NEXT_PUBLIC_MOCK_EVENTS ("none" or "some"), optionally filtered by status. */
 export function getMockEvents(status?: EventStatus): EventItem[] {
-  const mode = process.env.NEXT_PUBLIC_MOCK_EVENTS ?? "some";
+  const mode = getEnvMockEventsMode();
   if (mode === "none") {
     return [];
   }
@@ -357,7 +361,7 @@ export function getMockEvents(status?: EventStatus): EventItem[] {
 export function getMockWork(
   category?: WorkCategory,
   page = 1,
-  pageSize = 9,
+  pageSize: number = displayLimits.workPageSize,
 ): WorkResponse {
   const filtered = category
     ? ALL_MOCK_WORK.filter((item) => item.category === category)

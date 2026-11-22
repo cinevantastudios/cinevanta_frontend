@@ -1,62 +1,60 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
-import { Button, Input } from "@/components/ui";
-import { postSubscriber } from "@/lib/api";
+import { Button, Input, StatusBanner } from "@/components/ui";
 import { content } from "@/lib/content";
+import { useSubscriberSubmission } from "@/lib/hooks";
 import { footerNotifySchema } from "@/lib/validators";
 
+/**
+ * Compact email signup bar rendered in the global footer.
+ * Shares submission state, double-submit protection, and error handling with NotifyForm via useSubscriberSubmission.
+ */
 export function FooterNotifyForm() {
   const [email, setEmail] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [succeeded, setSucceeded] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
+  const { submitting, succeeded, submitError, setSubmitError, submitSubscriber } =
+    useSubscriberSubmission(() => setEmail(""));
+
+  const displayError = validationError ?? submitError;
+
+  /** Validates the email address and submits a footer subscription request. */
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const parsed = footerNotifySchema.safeParse({ email });
+    if (submitting) return;
 
+    const parsed = footerNotifySchema.safeParse({ email });
     if (!parsed.success) {
-      setError(parsed.error.issues[0]?.message ?? content.validation.emailInvalid);
+      setValidationError(parsed.error.issues[0]?.message ?? content.validation.emailInvalid);
       return;
     }
 
-    setError(null);
-    setSubmitting(true);
-
-    const result = await postSubscriber({
+    setValidationError(null);
+    const outcome = await submitSubscriber({
       email: parsed.data.email,
       source: "footer",
     });
 
-    setSubmitting(false);
-
-    if (!result.ok) {
-      setError(result.fields?.email || result.error || content.notify.errorMessage);
-      return;
+    if (!outcome.ok && outcome.fields?.email) {
+      setValidationError(outcome.fields.email);
     }
-
-    setEmail("");
-    setSucceeded(true);
   }
 
   if (succeeded) {
     return (
-      <p
-        role="status"
-        aria-live="polite"
-        className="flex items-center gap-2 text-[14px] font-medium text-yellow"
-      >
-        <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
-        <span>{content.notify.successMessage}</span>
-      </p>
+      <StatusBanner
+        variant="success"
+        surface="ink"
+        compact
+        message={content.notify.successMessage}
+      />
     );
   }
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-2.5">
-      <label htmlFor="footer-notify-email" className="block text-[14px] font-semibold text-cream">
+      <label htmlFor="footer-notify-email" className="block text-[0.875rem] font-semibold text-cream">
         {content.footer.notifyHeading}
       </label>
       <div className="flex flex-col gap-2.5 sm:flex-row">
@@ -70,29 +68,27 @@ export function FooterNotifyForm() {
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              if (error) setError(null);
+              if (validationError) setValidationError(null);
+              if (submitError) setSubmitError(null);
             }}
-            hasError={Boolean(error)}
+            hasError={Boolean(displayError)}
             aria-label={content.footer.notifyLabel}
-            aria-describedby={error ? "footer-notify-error" : undefined}
+            aria-describedby={displayError ? "footer-notify-error" : undefined}
           />
         </div>
         <Button type="submit" variant="yellow" loading={submitting} className="shrink-0">
           {submitting ? content.notify.submittingLabel : content.footer.notifyButton}
         </Button>
       </div>
-      {error ? (
-        <p
+      {displayError ? (
+        <StatusBanner
           id="footer-notify-error"
-          role="alert"
-          aria-live="polite"
-          className="flex items-start gap-2 text-[14px] font-medium text-yellow"
-        >
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-          <span>{error}</span>
-        </p>
+          variant="error"
+          surface="ink"
+          compact
+          message={displayError}
+        />
       ) : null}
     </form>
   );
 }
-

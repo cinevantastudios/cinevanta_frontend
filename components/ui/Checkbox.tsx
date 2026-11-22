@@ -28,11 +28,11 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
         <label
           htmlFor={id}
           className={cn(
-            "inline-flex min-h-[44px] cursor-pointer items-start gap-3 py-2 text-[14px] leading-snug select-none",
+            "inline-flex min-h-[2.75rem] cursor-pointer items-start gap-3 py-2 text-[0.875rem] leading-snug select-none",
             isInk ? "text-cream" : "text-ink",
           )}
         >
-          <span className="relative mt-0.5 inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center">
+          <span className="relative mt-0.5 inline-flex h-[1.375rem] w-[1.375rem] shrink-0 items-center justify-center">
             <input
               ref={ref}
               id={id}
@@ -45,7 +45,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
             <span
               aria-hidden="true"
               className={cn(
-                "flex h-[22px] w-[22px] items-center justify-center rounded-[6px] border-2 border-ink bg-white transition-colors duration-150",
+                "flex h-[1.375rem] w-[1.375rem] items-center justify-center rounded-[6px] border-2 border-ink bg-white transition-colors duration-150",
                 "peer-checked:bg-yellow",
                 "peer-focus-visible:outline-[3px] peer-focus-visible:outline-offset-2",
                 isInk
@@ -70,7 +70,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
           role="alert"
           aria-live="polite"
           className={cn(
-            "flex items-start gap-2 text-[14px] font-medium leading-snug",
+            "flex items-start gap-2 text-[0.875rem] font-medium leading-snug",
             isInk ? "text-yellow" : "text-ink",
           )}
         >

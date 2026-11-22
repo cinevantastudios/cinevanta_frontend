@@ -12,6 +12,7 @@ const roundedClasses: Record<NonNullable<SkeletonProps["rounded"]>, string> = {
   pill: "rounded-pill",
 };
 
+/** Animated sand-toned loading placeholder block (pulse disabled automatically under reduced motion). */
 export function Skeleton({ rounded = "input", className, ...props }: SkeletonProps) {
   return (
     <div

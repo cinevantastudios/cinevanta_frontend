@@ -2,27 +2,25 @@ import type { Metadata } from "next";
 import { Container, Placeholder, Section } from "@/components/ui";
 import { CtaBlock } from "@/components/home/CtaBlock";
 import { content } from "@/lib/content";
+import { routes } from "@/lib/site";
+import { createPageMetadata } from "@/lib/utils";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: content.about.pageTitle,
   description: content.meta.defaultDescription,
-  openGraph: {
-    title: `${content.about.pageTitle} | Cinevanta Studios`,
-    description: content.meta.defaultDescription,
-    url: "/about",
-  },
-};
+  path: routes.about,
+});
 
 export default function AboutPage() {
   return (
     <main id="main-content">
       <Section tone="cream" className="pt-12 pb-14 md:pt-16 lg:pt-20">
         <Container className="space-y-12">
-          <div className="max-w-[900px] space-y-6">
+          <div className="max-w-[56.25rem] space-y-6">
             <h1 className="font-display-expanded text-h1 text-ink">
               {content.about.pageTitle}
             </h1>
-            <p className="max-w-[42ch] text-[22px] leading-[1.45] font-medium text-ink md:text-[28px]">
+            <p className="max-w-[42ch] text-[1.375rem] leading-[1.45] font-medium text-ink md:text-[1.75rem]">
               {content.about.statement}
             </p>
           </div>
@@ -41,10 +39,10 @@ export default function AboutPage() {
                 key={service.id}
                 className="grid grid-cols-1 gap-2 py-6 md:grid-cols-12 md:items-baseline md:gap-8"
               >
-                <dt className="font-display-expanded text-[22px] text-ink md:col-span-4 md:text-[24px]">
+                <dt className="font-display-expanded text-[1.375rem] text-ink md:col-span-4 md:text-[1.5rem]">
                   {service.title}
                 </dt>
-                <dd className="max-w-[60ch] text-[16px] leading-relaxed text-ink/85 md:col-span-8">
+                <dd className="max-w-[60ch] text-[1rem] leading-relaxed text-ink/85 md:col-span-8">
                   {service.description}
                 </dd>
               </div>
@@ -73,7 +71,7 @@ export default function AboutPage() {
               >
                 {content.about.proprietorName}
               </h2>
-              <p className="max-w-[56ch] text-[18px] leading-[1.6] text-muted">
+              <p className="max-w-[56ch] text-[1.125rem] leading-[1.6] text-muted">
                 {content.about.proprietorBio}
               </p>
             </div>

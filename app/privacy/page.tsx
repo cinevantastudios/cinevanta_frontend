@@ -1,35 +1,23 @@
 import type { Metadata } from "next";
-import { Container, Section } from "@/components/ui";
+import { LegalPageLayout } from "@/components/layout/LegalPageLayout";
 import { content } from "@/lib/content";
-import { site } from "@/lib/site";
+import { routes, site } from "@/lib/site";
+import { createPageMetadata } from "@/lib/utils";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: content.legal.privacyTitle,
-  description: `Privacy policy for ${site.name}.`,
-};
+  description: content.legal.privacyDescription,
+  path: routes.privacy,
+});
 
+/** Privacy policy page rendered through the shared LegalPageLayout and centralized content deck. */
 export default function PrivacyPage() {
   return (
-    <main id="main-content">
-      <Section tone="cream" className="pt-12 pb-16 md:pt-16 lg:pt-20">
-        <Container className="max-w-[65ch] space-y-6">
-          <h1 className="font-display-expanded text-h1 text-ink">
-            {content.legal.privacyTitle}
-          </h1>
-          <div className="space-y-4 rounded-card border-2 border-ink bg-white p-7 text-[16px] leading-relaxed text-ink">
-            <p className="font-semibold">{content.legal.placeholder}</p>
-            <p className="text-muted">
-              This site does not set cookies or run third-party tracking scripts. Information
-              submitted via the contact or event notification forms is used solely by {site.name} to
-              respond to enquiries or send event updates.
-            </p>
-            <p className="text-muted">
-              Questions: {site.email} • {site.city}
-            </p>
-          </div>
-        </Container>
-      </Section>
-    </main>
+    <LegalPageLayout title={content.legal.privacyTitle}>
+      <p className="text-muted">{content.legal.privacyBody}</p>
+      <p className="text-muted">
+        {content.legal.privacyQuestionsPrefix} {site.email} • {site.city}
+      </p>
+    </LegalPageLayout>
   );
 }
-

@@ -1,39 +1,43 @@
 import type { Metadata } from "next";
 import { Container, Section } from "@/components/ui";
-import { WorkGrid } from "@/components/work/WorkGrid";
 import type { WorkFilterValue } from "@/components/work/WorkFilters";
-import { getWork } from "@/lib/api";
+import { WorkGrid } from "@/components/work/WorkGrid";
+import { getWork } from "@/lib/api-client";
 import { content } from "@/lib/content";
+import { displayLimits, routes } from "@/lib/site";
+import { createPageMetadata } from "@/lib/utils";
 import { workCategorySchema } from "@/types/api";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: content.work.pageTitle,
   description: content.work.pageLead,
-  openGraph: {
-    title: `${content.work.pageTitle} | Cinevanta Studios`,
-    description: content.work.pageLead,
-    url: "/work",
-  },
-};
+  path: routes.work,
+});
 
 interface WorkPageProps {
-  searchParams: Promise<{ category?: string | string[] }>;
+  searchParams?: Promise<{ category?: string | string[] }>;
 }
 
+/** Validates the ?category= query parameter on the server so deep links from Services render immediately. */
 function parseCategory(raw: string | string[] | undefined): WorkFilterValue {
   const value = Array.isArray(raw) ? raw[0] : raw;
   const parsed = workCategorySchema.safeParse(value);
   return parsed.success ? parsed.data : "all";
 }
 
+/**
+ * Portfolio listing page.
+ * Pre-renders the requested category on the server with zero visual flash while `getWork`
+ * caches upstream API responses via `cache_logics/revalidation-cache`.
+ */
 export default async function WorkPage({ searchParams }: WorkPageProps) {
-  const params = await searchParams;
+  const params = searchParams ? await searchParams : {};
   const initialCategory = parseCategory(params.category);
 
   const initialWork = await getWork(
     initialCategory === "all" ? undefined : initialCategory,
     1,
-    9,
+    displayLimits.workPageSize,
   );
 
   return (
@@ -44,7 +48,7 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
             <h1 className="font-display-expanded text-h1 text-ink">
               {content.work.pageTitle}
             </h1>
-            <p className="text-[18px] leading-[1.6] text-muted">{content.work.pageLead}</p>
+            <p className="text-[1.125rem] leading-[1.6] text-muted">{content.work.pageLead}</p>
           </div>
 
           <WorkGrid
@@ -57,4 +61,3 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
     </main>
   );
 }
-

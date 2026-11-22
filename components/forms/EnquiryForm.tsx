@@ -2,28 +2,31 @@
 
 import { useEffect, useState } from "react";
 import { useForm, type FieldErrors, type Resolver } from "react-hook-form";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
 import {
   Button,
   Field,
   Input,
   Select,
+  StatusBanner,
   Textarea,
   getFieldDescribedBy,
 } from "@/components/ui";
-import { postEnquiry } from "@/lib/api";
+import { postEnquiry } from "@/lib/api-client";
 import { content } from "@/lib/content";
 import { site } from "@/lib/site";
 import {
   enquiryFormSchema,
+  mapZodFieldErrors,
   normalizePhone,
   type EnquiryFormValues,
 } from "@/lib/validators";
-import type { EnquiryType } from "@/types/api";
+import { formConstraints, type EnquiryType } from "@/types/api";
 
 export interface EnquiryFormProps {
   initialType?: EnquiryType;
 }
+
+const KNOWN_ENQUIRY_FIELDS = ["name", "email", "phone", "type", "message"] as const;
 
 const enquiryResolver: Resolver<EnquiryFormValues> = async (values) => {
   const parsed = enquiryFormSchema.safeParse(values);
@@ -31,14 +34,12 @@ const enquiryResolver: Resolver<EnquiryFormValues> = async (values) => {
     return { values: parsed.data, errors: {} };
   }
 
+  const mapped = mapZodFieldErrors(parsed.error.issues, KNOWN_ENQUIRY_FIELDS);
   const fieldErrors: FieldErrors<EnquiryFormValues> = {};
-  for (const issue of parsed.error.issues) {
-    const field = issue.path[0] as keyof EnquiryFormValues | undefined;
-    if (field && !fieldErrors[field]) {
-      fieldErrors[field] = {
-        type: issue.code,
-        message: issue.message,
-      };
+  for (const field of KNOWN_ENQUIRY_FIELDS) {
+    const message = mapped[field];
+    if (message) {
+      fieldErrors[field] = { type: "validation", message };
     }
   }
 
@@ -72,6 +73,7 @@ export function EnquiryForm({ initialType = "film" }: EnquiryFormProps) {
     },
   });
 
+  // Record form mount time for bot-timing checks.
   useEffect(() => {
     setValue("startedAt", Date.now());
   }, [setValue]);
@@ -99,21 +101,16 @@ export function EnquiryForm({ initialType = "film" }: EnquiryFormProps) {
 
     if (!result.ok) {
       if (result.fields) {
-        const knownFields: Array<keyof EnquiryFormValues> = [
-          "name",
-          "email",
-          "phone",
-          "type",
-          "message",
-        ];
-        for (const field of knownFields) {
+        for (const field of KNOWN_ENQUIRY_FIELDS) {
           const message = result.fields[field];
           if (message) {
             setError(field, { type: "server", message });
           }
         }
       }
-      setSubmitError(content.contact.errorMessage(site.email));
+      setSubmitError(
+        result.rateLimited ? result.error : content.contact.errorMessage(site.email),
+      );
       return;
     }
 
@@ -122,42 +119,33 @@ export function EnquiryForm({ initialType = "film" }: EnquiryFormProps) {
 
   if (submittedName) {
     return (
-      <div
-        role="status"
-        aria-live="polite"
-        className="space-y-5 rounded-card border-2 border-ink bg-yellow p-7 text-ink md:p-9"
-      >
-        <div className="flex items-start gap-3">
-          <CheckCircle2 className="mt-1 h-6 w-6 shrink-0" aria-hidden="true" />
-          <div className="space-y-2">
-            <h2 className="font-display-expanded text-[24px]">
-              {content.contact.successTitle}
-            </h2>
-            <p className="max-w-[50ch] text-[16px] leading-relaxed">
-              {content.contact.successMessage(submittedName)}
-            </p>
-          </div>
-        </div>
-        <div>
-          <Button
-            type="button"
-            variant="ink"
-            onClick={() => {
-              setSubmittedName(null);
-              reset({
-                name: "",
-                email: "",
-                phone: "",
-                type: initialType,
-                message: "",
-                website: "",
-                startedAt: Date.now(),
-              });
-            }}
-          >
-            {content.contact.sendAnotherLabel}
-          </Button>
-        </div>
+      <div className="space-y-5">
+        <StatusBanner
+          variant="success"
+          title={content.contact.successTitle}
+          message={content.contact.successMessage(submittedName)}
+          className="p-7 md:p-9"
+          action={
+            <Button
+              type="button"
+              variant="ink"
+              onClick={() => {
+                setSubmittedName(null);
+                reset({
+                  name: "",
+                  email: "",
+                  phone: "",
+                  type: initialType,
+                  message: "",
+                  website: "",
+                  startedAt: Date.now(),
+                });
+              }}
+            >
+              {content.contact.sendAnotherLabel}
+            </Button>
+          }
+        />
       </div>
     );
   }
@@ -252,7 +240,7 @@ export function EnquiryForm({ initialType = "film" }: EnquiryFormProps) {
       <Field
         id="enquiry-message"
         label={content.contact.fields.message.label}
-        counter={`${messageValue.length} / 1000`}
+        counter={`${messageValue.length} / ${formConstraints.messageMax}`}
         error={errors.message?.message}
       >
         <Textarea
@@ -266,16 +254,7 @@ export function EnquiryForm({ initialType = "film" }: EnquiryFormProps) {
         />
       </Field>
 
-      {submitError ? (
-        <div
-          role="alert"
-          aria-live="polite"
-          className="flex items-start gap-3 rounded-input border-2 border-ink bg-sand p-4 text-[14px] font-medium text-ink"
-        >
-          <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
-          <span>{submitError}</span>
-        </div>
-      ) : null}
+      {submitError ? <StatusBanner variant="error" message={submitError} /> : null}
 
       <div className="pt-1">
         <Button type="submit" variant="ink" withArrow loading={isSubmitting}>

@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { RegisterButton } from "@/components/events/RegisterButton";
-import * as api from "@/lib/api";
+import * as api from "@/lib/api-client";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/work",

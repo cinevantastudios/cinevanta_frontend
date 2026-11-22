@@ -2,6 +2,7 @@ import { Container } from "@/components/ui";
 import { content } from "@/lib/content";
 import { site } from "@/lib/site";
 
+/** Displays collaborator/partner names when configured; collapses completely when empty. */
 export function Partners() {
   if (site.partners.length === 0) {
     return null;
@@ -18,7 +19,7 @@ export function Partners() {
           {site.partners.map((partner) => (
             <li
               key={partner}
-              className="font-display-expanded text-[24px] text-faint md:text-[28px]"
+              className="font-display-expanded text-[1.5rem] text-faint md:text-[1.75rem]"
             >
               {partner}
             </li>
