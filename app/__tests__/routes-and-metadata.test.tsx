@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import AboutLoading from "@/app/about/loading";
+import AboutPage from "@/app/about/page";
 import ContactLoading from "@/app/contact/loading";
 import ContactPage from "@/app/contact/page";
 import EventsLoading from "@/app/events/loading";
@@ -11,6 +13,8 @@ import RootLoading from "@/app/loading";
 import manifest from "@/app/manifest";
 import HomePage from "@/app/page";
 import robots from "@/app/robots";
+import ServicesLoading from "@/app/services/loading";
+import ServicesPage from "@/app/services/page";
 import sitemap from "@/app/sitemap";
 import StyleguidePage from "@/app/styleguide/page";
 import WorkLoading from "@/app/work/loading";
@@ -108,10 +112,32 @@ describe("App Router pages, loading boundaries, metadata routes & JSON-LD securi
     const { unmount: unmountContact } = render(contactJsx);
     expect(screen.getByLabelText("Enquiry type")).toHaveValue("corporate");
     unmountContact();
+
+    // AboutPage & ServicesPage render full themed sections with zero axe violations
+    const { container: aboutContainer, unmount: unmountAbout } = render(<AboutPage />);
+    expect(screen.getByRole("heading", { level: 1, name: "About" })).toBeInTheDocument();
+    expect(screen.getByText("From script to stage")).toBeInTheDocument();
+    expect(screen.getByText("Leadership")).toBeInTheDocument();
+    expect(await axe(aboutContainer)).toHaveNoViolations();
+    unmountAbout();
+
+    const { container: servicesContainer, unmount: unmountServices } = render(<ServicesPage />);
+    expect(screen.getByRole("heading", { level: 1, name: "Services" })).toBeInTheDocument();
+    expect(screen.getByText("How a production runs")).toBeInTheDocument();
+    expect(screen.getByText("Who we build with")).toBeInTheDocument();
+    expect(await axe(servicesContainer)).toHaveNoViolations();
+    unmountServices();
   });
 
   it("renders all route loading skeleton boundaries without accessibility violations", async () => {
-    for (const LoadingComponent of [RootLoading, EventsLoading, WorkLoading, ContactLoading]) {
+    for (const LoadingComponent of [
+      RootLoading,
+      AboutLoading,
+      ServicesLoading,
+      EventsLoading,
+      WorkLoading,
+      ContactLoading,
+    ]) {
       const { container, unmount } = render(<LoadingComponent />);
       expect(await axe(container)).toHaveNoViolations();
       unmount();

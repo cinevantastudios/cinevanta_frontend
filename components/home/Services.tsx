@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRightIcon, Container, Section, SectionHeading } from "@/components/ui";
 import { content, type ServiceCardTone } from "@/lib/content";
+import { routes } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const cardToneClasses: Record<ServiceCardTone, string> = {
@@ -25,6 +26,14 @@ export function Services() {
           id="services-heading"
           title={content.services.heading}
           sticker={content.services.sticker}
+          action={
+            <Link
+              href={routes.services}
+              className="inline-flex min-h-[2.75rem] items-center text-[0.9375rem] font-semibold text-ink underline decoration-2 underline-offset-[6px] transition-opacity duration-150 hover:opacity-75"
+            >
+              {content.services.seeAll}
+            </Link>
+          }
         />
 
         {/* Mobile: horizontal scroll-snap row; Tablet (768-1199): 3 + 2 spanning equally; Desktop (1200+): 5 in one row */}

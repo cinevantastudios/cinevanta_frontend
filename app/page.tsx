@@ -30,7 +30,8 @@ export default async function HomePage() {
   return (
     <>
       <JsonLd data={buildOrganizationJsonLd()} />
-      <AdStrip ads={ads} renderedAtIso={renderedAtIso} />
+      {/* Navbar provides the persistent top 3px divider directly above the ad strip. */}
+      <AdStrip ads={ads} renderedAtIso={renderedAtIso} className="border-t-0" />
       <main id="main-content">
         <Hero showreel={site.showreel} />
         <Marquee />

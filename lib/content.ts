@@ -7,8 +7,34 @@ export interface ServiceItem {
   id: WorkCategory;
   title: string;
   description: string;
+  detail: string;
+  deliverables: readonly string[];
+  placeholderLabel: string;
   tone: ServiceCardTone;
   href: string;
+  enquiryHref: string;
+}
+
+export interface ServiceProcessStep {
+  stage: string;
+  title: string;
+  description: string;
+  tone: "yellow" | "white" | "sand" | "ink";
+}
+
+export interface ServiceCollaborateGroup {
+  tag: string;
+  title: string;
+  description: string;
+  ctaLabel: string;
+  href: string;
+}
+
+export interface AboutCraftPillar {
+  meta: string;
+  title: string;
+  description: string;
+  tone: "yellow" | "cream" | "ink";
 }
 
 /** Single source of truth for work category display labels, reused across filters, cards, and dialogs. */
@@ -20,13 +46,23 @@ const WORK_CATEGORY_LABELS: Record<WorkCategory, string> = {
   corporate: "Corporate",
 };
 
+/** Navigation link descriptor shared by desktop Navbar, MobileMenu, and Footer. */
+export interface NavLinkItem {
+  label: string;
+  href: string;
+  /** Set to `false` when a link temporarily redirects to another route and should not highlight as active there. */
+  matchActive?: boolean;
+}
+
 /** Primary navigation links shared by desktop Navbar, MobileMenu, and derived footer navigation. */
-const PRIMARY_NAV_LINKS = [
+const PRIMARY_NAV_LINKS: readonly NavLinkItem[] = [
+  { label: "Home", href: routes.home },
+  { label: "About", href: routes.about },
   { label: "Services", href: routes.services },
   { label: "Work", href: routes.work },
   { label: "Events", href: routes.events },
   { label: "Contact", href: routes.contact },
-] as const;
+];
 
 /** Centralized copy deck derived dynamically from `site` and `routes` to prevent duplicate literals. */
 export const content = {
@@ -80,41 +116,164 @@ export const content = {
   services: {
     heading: "What we do",
     sticker: "Five ways to work with us",
+    seeAll: "Explore all services",
+    pageTitle: "Services",
+    pageLead:
+      "We develop, produce and stage films, advertising campaigns, live entertainment, fashion properties and corporate experiences from script to delivery.",
+    jumpNavLabel: "Jump to service discipline",
+    deliverablesLabel: "Formats & deliverables",
+    enquireCta: "Enquire for this service",
+    viewWorkCta: "See related work",
+    processHeading: "How a production runs",
+    processSticker: "Brief to delivery",
+    processSteps: [
+      {
+        stage: "Stage 01",
+        title: "Brief & Treatment",
+        description:
+          "We align on script, creative treatment, stage format, production schedule and budget parameters before cameras or rigs roll.",
+        tone: "yellow",
+      },
+      {
+        stage: "Stage 02",
+        title: "Pre-Production & Casting",
+        description:
+          "Casting, location scouting, stage design, technical crew assembly, permits and artist logistics managed under one production desk.",
+        tone: "white",
+      },
+      {
+        stage: "Stage 03",
+        title: "Principal Shoot & Live Stage",
+        description:
+          "On-set direction, multi-camera capture, lighting and sound engineering, show calling and crowd operations.",
+        tone: "sand",
+      },
+      {
+        stage: "Stage 04",
+        title: "Post, Masters & Presentation",
+        description:
+          "Offline and online edit, colour grading, sound mix, broadcast/OTT deliverables and post-event highlight packages.",
+        tone: "ink",
+      },
+    ] satisfies ServiceProcessStep[],
+    collaborateHeading: "Who we build with",
+    collaborateSticker: "Three ways to partner",
+    collaborateGroups: [
+      {
+        tag: "For brands & agencies",
+        title: "Commercials & brand stages",
+        description:
+          "Commission ad films, digital campaigns, product launches, dealer summits and on-ground activations built around your release calendar.",
+        ctaLabel: "Discuss a campaign",
+        href: routes.contactByType("advertising"),
+      },
+      {
+        tag: "For producers & networks",
+        title: "Original films & series",
+        description:
+          "Partner on feature films, OTT series, documentaries, short films and music videos with full line-production and post support in Delhi.",
+        ctaLabel: "Discuss a film project",
+        href: routes.contactByType("film"),
+      },
+      {
+        tag: "For sponsors, venues & artists",
+        title: "Live formats & talent properties",
+        description:
+          "Collaborate on celebrity cricket leagues, concerts, fashion shows, pageants, award nights and cultural festivals.",
+        ctaLabel: "Partner on a live event",
+        href: routes.contactByType("live_event"),
+      },
+    ] satisfies ServiceCollaborateGroup[],
     items: [
       {
         id: "film",
         title: "Film & Content",
         description: "Films, web series, documentaries, shorts and music videos.",
+        detail:
+          "Narrative and non-fiction production from script development and casting through principal photography, editorial, sound design and final theatrical or streaming masters.",
+        deliverables: [
+          "Feature films",
+          "Web series & OTT",
+          "Documentaries",
+          "Short films",
+          "Music videos",
+        ],
+        placeholderLabel: "[FILM SET OR CAMERA RIG STILL]",
         tone: "yellow",
         href: routes.workByCategory("film"),
+        enquiryHref: routes.contactByType("film"),
       },
       {
         id: "advertising",
         title: "Advertising",
         description: "Ad films, TVCs, digital ads and branded content.",
+        detail:
+          "High-impact commercial storytelling crafted for broadcast television, digital platforms, cinema screens and social campaigns — from storyboard and casting to multi-format cutdowns.",
+        deliverables: [
+          "TV commercials (TVCs)",
+          "Digital ad films",
+          "Branded content",
+          "Launch films",
+          "Social video cutdowns",
+        ],
+        placeholderLabel: "[COMMERCIAL SHOOT FRAME]",
         tone: "sand",
         href: routes.workByCategory("advertising"),
+        enquiryHref: routes.contactByType("advertising"),
       },
       {
         id: "live_event",
         title: "Live Events & Sports",
         description: "Celebrity cricket, concerts, award nights and festivals.",
+        detail:
+          "Large-format live entertainment and sporting spectacles designed for stadium and arena audiences, combining show direction, artist booking, broadcast capture and venue operations.",
+        deliverables: [
+          "Celebrity cricket matches",
+          "Live concerts",
+          "Award nights",
+          "Cultural festivals",
+          "Multi-cam live capture",
+        ],
+        placeholderLabel: "[STADIUM OR CONCERT STAGE PHOTO]",
         tone: "white",
         href: routes.workByCategory("live_event"),
+        enquiryHref: routes.contactByType("live_event"),
       },
       {
         id: "fashion",
         title: "Fashion & Talent",
         description: "Fashion shows, pageants, talent hunts and artist management.",
+        detail:
+          "Runway choreography, designer showcases, regional and national talent hunts, pageants and ongoing artist representation for screen and stage.",
+        deliverables: [
+          "Runway & fashion shows",
+          "Pageants",
+          "Talent hunts",
+          "Artist management",
+          "Lookbooks & showreels",
+        ],
+        placeholderLabel: "[RUNWAY & BACKSTAGE FRAME]",
         tone: "ink",
         href: routes.workByCategory("fashion"),
+        enquiryHref: routes.contactByType("fashion"),
       },
       {
         id: "corporate",
         title: "Corporate Events",
         description: "Launches, conferences, brand activations and summits.",
+        detail:
+          "Turnkey stage design, AV production, speaker choreography and experiential brand environments for flagship corporate moments, conferences and leadership summits.",
+        deliverables: [
+          "Product launches",
+          "Conferences & summits",
+          "Brand activations",
+          "Annual galas & awards",
+          "Experiential booths",
+        ],
+        placeholderLabel: "[CORPORATE STAGE & LIGHTING STILL]",
         tone: "yellow",
         href: routes.workByCategory("corporate"),
+        enquiryHref: routes.contactByType("corporate"),
       },
     ] satisfies ServiceItem[],
   },
@@ -235,12 +394,57 @@ export const content = {
   },
   about: {
     pageTitle: "About",
+    kicker: `Est. ${site.foundedYear} • ${site.city}`,
+    lead: `${site.name} is an independent production house in ${site.city} built for stories on screen, campaigns for brands, and live moments on stage.`,
     statement: "[One or two sentences about the studio in the proprietor's own words]",
+    statementCaption: `${site.name} • ${site.city}`,
+    studioStillLabel: "[STUDIO FLOOR OR SET STILL]",
+    studioStillMeta: `${site.locality} • EST. ${site.foundedYear}`,
+    primaryCta: { label: "See our work", href: routes.work },
+    secondaryCta: { label: "Explore services", href: routes.services },
     whatWeMakeHeading: "What we make",
+    whatWeMakeSticker: "Five production units",
+    whatWeMakeAction: "Full services breakdown",
+    exploreServiceLabel: "Explore unit",
+    approachHeading: "From script to stage",
+    approachSticker: "How we work",
+    pillars: [
+      {
+        meta: "Craft ✦ Development",
+        title: "Story, format & direction",
+        description:
+          "Every project starts with a clear narrative or show format — scripts, commercial treatments, stage blueprints and casting assembled in-house.",
+        tone: "yellow",
+      },
+      {
+        meta: "Craft ✦ Production",
+        title: "Crews, cameras & stagecraft",
+        description:
+          "Full-unit film crews, commercial shoot production, stadium and runway staging, lighting rigs, sound engineering and on-ground show calling.",
+        tone: "cream",
+      },
+      {
+        meta: "Craft ✦ Presentation",
+        title: "Post, masters & live audiences",
+        description:
+          "Editorial, colour, sound mix and broadcast/OTT masters for screen work alongside ticketed and invitation-only live experiences.",
+        tone: "ink",
+      },
+    ] satisfies AboutCraftPillar[],
     proprietorHeading: "Leadership",
+    proprietorSticker: "Sole proprietorship",
+    proprietorRole: "Founder & Proprietor",
     proprietorName: "[Proprietor name]",
     proprietorBio: "[Short bio]",
     proprietorPortraitLabel: "[PROPRIETOR PORTRAIT]",
+    factSheetHeading: "Studio sheet",
+    facts: [
+      { label: "Studio", value: site.name },
+      { label: "Base", value: site.city },
+      { label: "Established", value: String(site.foundedYear) },
+      { label: "Direct contact", value: `${site.email} • ${site.phone}` },
+    ] as const,
+    connectCta: "Start a conversation",
   },
   legal: {
     privacyTitle: "Privacy",
@@ -255,11 +459,7 @@ export const content = {
   footer: {
     tagline: `Films, advertising and live events from ${site.locality}.`,
     navHeading: "Navigate",
-    navLinks: [
-      ...PRIMARY_NAV_LINKS.slice(0, 3),
-      { label: "About", href: routes.about },
-      ...PRIMARY_NAV_LINKS.slice(3),
-    ],
+    navLinks: PRIMARY_NAV_LINKS,
     contactHeading: "Contact",
     notifyHeading: "Event updates",
     notifyLabel: "Email address",

@@ -123,21 +123,26 @@ export function MobileMenu({
         </button>
       </div>
 
+      {/* Full-screen mobile nav links mirroring desktop lift/tilt hover and size-only active indicator. */}
       <nav aria-label={content.nav.mobileNavLabel} className="flex flex-1 flex-col justify-center px-5">
         <ul className="space-y-4">
           {content.nav.links.map((item) => {
-            const isActive = isNavRouteActive(pathname, item.href);
+            const isActive = isNavRouteActive(pathname, item.href, item.matchActive);
 
             return (
-              <li key={item.href}>
+              <li key={item.label}>
                 <Link
                   href={item.href}
                   onClick={onClose}
                   tabIndex={open ? 0 : -1}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "font-display-expanded text-h2 inline-block py-1 text-ink",
-                    isActive && "underline decoration-4 underline-offset-8",
+                    "font-display-expanded text-h2 inline-block origin-left py-1 text-ink",
+                    "transition-transform duration-200 ease-[var(--ease-move)]",
+                    "hover:-translate-y-0.5 hover:rotate-[0.6deg]",
+                    "focus-visible:-translate-y-0.5 focus-visible:rotate-[0.6deg]",
+                    "motion-reduce:transform-none",
+                    isActive && "scale-[1.08]",
                   )}
                 >
                   {item.label}

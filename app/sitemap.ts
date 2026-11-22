@@ -14,9 +14,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const staticRoutes = [
     routes.home,
+    routes.about,
+    routes.services,
     routes.events,
     routes.work,
-    routes.about,
     routes.contact,
     routes.privacy,
     routes.terms,

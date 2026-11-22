@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { displayLimits, routes, site } from "@/lib/site";
+import { displayLimits, site } from "@/lib/site";
 import type { Ad } from "@/types/api";
 
 type ClassValue = string | number | boolean | null | undefined | ClassValue[];
@@ -67,10 +67,14 @@ export function isExternalHref(url: string, explicitExternal = false): boolean {
 
 /**
  * Determines whether a primary navigation item matches the active pathname.
- * Excludes hash-anchor links (such as `/#services`) from active route highlighting.
+ * Excludes hash-anchor links (such as `/#services`) and links with `matchActive === false`.
  */
-export function isNavRouteActive(pathname: string, itemHref: string): boolean {
-  if (itemHref === routes.services || itemHref.includes("#")) {
+export function isNavRouteActive(
+  pathname: string,
+  itemHref: string,
+  matchActive = true,
+): boolean {
+  if (!matchActive || itemHref.includes("#")) {
     return false;
   }
   return pathname === itemHref || pathname.startsWith(`${itemHref}/`);

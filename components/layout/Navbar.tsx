@@ -21,9 +21,7 @@ export function Navbar({ nextEvent = null }: NavbarProps) {
   const pathname = usePathname() ?? routes.home;
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileNotifyOpen, setMobileNotifyOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const scrolledRef = useRef(false);
   const hiddenRef = useRef(false);
   const lastScrollYRef = useRef(0);
   const menuTriggerRef = useRef<HTMLButtonElement | null>(null);
@@ -39,12 +37,6 @@ export function Navbar({ nextEvent = null }: NavbarProps) {
     function handleScroll() {
       const currentY = Math.max(0, window.scrollY);
       const delta = currentY - lastScrollYRef.current;
-
-      const nextScrolled = currentY > uiConfig.navScrollBorderThresholdPx;
-      if (nextScrolled !== scrolledRef.current) {
-        scrolledRef.current = nextScrolled;
-        setScrolled(nextScrolled);
-      }
 
       let nextHidden = hiddenRef.current;
       if (menuOpen || currentY <= uiConfig.navScrollBorderThresholdPx) {
@@ -71,13 +63,13 @@ export function Navbar({ nextEvent = null }: NavbarProps) {
 
   return (
     <>
+      {/* Persistent 3px ink bottom border keeps the header divider visible across every route. */}
       <header
         data-hidden={hidden && !menuOpen ? "true" : "false"}
         className={cn(
-          "sticky top-0 z-[var(--z-navbar)] h-20 w-full bg-cream",
-          "transition-[transform,border-color] duration-200 ease-[var(--ease-move)]",
+          "sticky top-0 z-[var(--z-navbar)] h-20 w-full border-b-[3px] border-ink bg-cream",
+          "transition-transform duration-200 ease-[var(--ease-move)]",
           "motion-reduce:transition-none",
-          scrolled ? "border-b border-ink" : "border-b border-transparent",
           hidden && !menuOpen ? "-translate-y-full" : "translate-y-0",
         )}
       >
@@ -90,18 +82,25 @@ export function Navbar({ nextEvent = null }: NavbarProps) {
             <Wordmark size="sm" tone="ink" />
           </Link>
 
+          {/* Primary desktop links: subtle lift/tilt on hover matching Services cards, slight size bump on active route. */}
           <nav aria-label={content.nav.primaryNavLabel} className="hidden items-center gap-8 md:flex">
             {content.nav.links.map((item) => {
-              const isActive = isNavRouteActive(pathname, item.href);
+              const isActive = isNavRouteActive(pathname, item.href, item.matchActive);
 
               return (
                 <Link
-                  key={item.href}
+                  key={item.label}
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "inline-flex min-h-[40px] items-center text-[13.5px] font-medium text-ink transition-opacity duration-150 hover:opacity-75",
-                    isActive && "underline decoration-ink decoration-2 underline-offset-[6px]",
+                    "inline-flex min-h-[40px] items-center text-ink",
+                    "transition-transform duration-200 ease-[var(--ease-move)]",
+                    "hover:-translate-y-0.5 hover:rotate-[1deg]",
+                    "focus-visible:-translate-y-0.5 focus-visible:rotate-[1deg]",
+                    "motion-reduce:transform-none",
+                    isActive
+                      ? "text-[15.5px] font-semibold"
+                      : "text-[13.5px] font-medium",
                   )}
                 >
                   {item.label}

@@ -17,7 +17,7 @@ export const themeColors = {
 /** Canonical application route paths and query URL builders so navigation, CTAs, and sitemaps share one source of truth. */
 export const routes = {
   home: "/",
-  services: "/#services",
+  services: "/services",
   work: "/work",
   events: "/events",
   about: "/about",
@@ -25,6 +25,7 @@ export const routes = {
   privacy: "/privacy",
   terms: "/terms",
   styleguide: "/styleguide",
+  serviceAnchor: (category: WorkCategory) => `/services#${category}`,
   workByCategory: (category?: WorkCategory | "all") =>
     !category || category === "all" ? "/work" : `/work?category=${category}`,
   eventsByStatus: (status?: EventStatus) =>

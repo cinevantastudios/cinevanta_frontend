@@ -8,7 +8,7 @@ import { routes, site } from "@/lib/site";
 
 /**
  * Global site footer with navigation links, studio contact placeholders, SocialLinks,
- * FooterNotifyForm, legal links, and the cropped outlined display wordmark.
+ * FooterNotifyForm, full-bleed legal divider, legal links, and the full outlined display wordmark.
  */
 export function Footer() {
   return (
@@ -35,7 +35,7 @@ export function Footer() {
             </h2>
             <ul className="space-y-2">
               {content.footer.navLinks.map((link) => (
-                <li key={link.href}>
+                <li key={link.label}>
                   <Link
                     href={link.href}
                     className="inline-flex min-h-[2.25rem] items-center text-[0.9375rem] text-muted-on-ink transition-colors duration-150 hover:text-yellow"
@@ -66,38 +66,42 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom legal bar */}
-        <div className="flex flex-col gap-3 border-t border-line-on-ink py-6 text-[0.875rem] text-muted-on-ink sm:flex-row sm:items-center sm:justify-between">
-          <p>{site.copyright}</p>
-          <div className="flex items-center gap-6">
-            <Link
-              href={routes.privacy}
-              className="inline-flex min-h-[2.25rem] items-center transition-colors duration-150 hover:text-yellow"
-            >
-              {content.footer.privacyLabel}
-            </Link>
-            <Link
-              href={routes.terms}
-              className="inline-flex min-h-[2.25rem] items-center transition-colors duration-150 hover:text-yellow"
-            >
-              {content.footer.termsLabel}
-            </Link>
-          </div>
-        </div>
       </Container>
 
-      {/* Giant cropped outlined wordmark */}
+      {/* Full-bleed bottom legal bar */}
+      <div className="border-t border-line-on-ink">
+        <Container>
+          <div className="flex flex-col gap-3 py-6 text-[0.875rem] text-muted-on-ink sm:flex-row sm:items-center sm:justify-between">
+            <p>{site.copyright}</p>
+            <div className="flex items-center gap-6">
+              <Link
+                href={routes.privacy}
+                className="inline-flex min-h-[2.25rem] items-center transition-colors duration-150 hover:text-yellow"
+              >
+                {content.footer.privacyLabel}
+              </Link>
+              <Link
+                href={routes.terms}
+                className="inline-flex min-h-[2.25rem] items-center transition-colors duration-150 hover:text-yellow"
+              >
+                {content.footer.termsLabel}
+              </Link>
+            </div>
+          </div>
+        </Container>
+      </div>
+
+      {/* Giant outlined wordmark */}
       <div
         aria-hidden="true"
-        className="text-wordmark-giant w-full overflow-hidden text-center"
-        style={{ height: "0.8em" }}
+        className="text-wordmark-giant w-full overflow-x-hidden pb-4 text-center md:pb-6"
       >
         <Wordmark
           size="giant"
           tone="cream"
           withAsterisk={false}
           outlined
-          className="leading-[0.92]"
+          className="leading-[1.05]"
         />
       </div>
     </footer>

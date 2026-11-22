@@ -187,12 +187,15 @@ describe("UI Kit components", () => {
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
 
-  it("filters out unsafe social links while rendering safe external and internal links", () => {
+  it("filters out unsafe social links while rendering icon links with accessible names", () => {
     render(
       <SocialLinks
         surface="ink"
         socials={[
           { label: "Instagram", href: "https://instagram.com/cinevanta" },
+          { label: "YouTube", href: "https://youtube.com/@cinevanta" },
+          { label: "LinkedIn", href: "https://linkedin.com/company/cinevanta" },
+          { label: "X", href: "https://x.com/cinevanta" },
           { label: "Bad", href: "javascript:alert(1)" },
           { label: "Empty", href: "   " },
           { label: "Placeholder", href: "#" },
@@ -200,10 +203,17 @@ describe("UI Kit components", () => {
       />,
     );
 
-    expect(screen.getByRole("link", { name: "Instagram" })).toHaveAttribute(
-      "rel",
-      "noopener noreferrer",
-    );
+    const instagramLink = screen.getByRole("link", { name: "Instagram" });
+    expect(instagramLink).toHaveAttribute("rel", "noopener noreferrer");
+    expect(instagramLink.querySelector("svg")).toBeInTheDocument();
+    expect(instagramLink).toHaveTextContent("");
+
+    for (const platform of ["YouTube", "LinkedIn", "X"]) {
+      const link = screen.getByRole("link", { name: platform });
+      expect(link.querySelector("svg")).toBeInTheDocument();
+      expect(link).toHaveTextContent("");
+    }
+
     expect(screen.getByRole("link", { name: "Placeholder" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Bad" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Empty" })).not.toBeInTheDocument();

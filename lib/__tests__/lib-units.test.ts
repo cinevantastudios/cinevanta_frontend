@@ -271,7 +271,18 @@ describe("lib/env, lib/utils, lib/validators, lib/tracking, lib/analytics & lib/
       expect(site.city).toContain(site.locality);
       expect(content.meta.titleTemplate).toContain(site.name);
       expect(content.hero.kicker).toContain(site.locality);
-      expect(content.footer.navLinks.some((l) => l.href === routes.about)).toBe(true);
+      expect(content.nav.links.map((l) => l.label)).toEqual([
+        "Home",
+        "About",
+        "Services",
+        "Work",
+        "Events",
+        "Contact",
+      ]);
+      expect(content.nav.links.find((l) => l.label === "Home")?.href).toBe(routes.home);
+      expect(content.nav.links.find((l) => l.label === "About")?.href).toBe(routes.about);
+      expect(content.nav.links.find((l) => l.label === "Services")?.href).toBe(routes.services);
+      expect(content.footer.navLinks.some((l) => l.label === "About")).toBe(true);
       expect(themeColors.yellow).toBe("#FFC93C");
       expect(layoutConfig.rootScalePercent).toBe(90);
       expect(layoutConfig.containerMaxWidthPx).toBe(1318);

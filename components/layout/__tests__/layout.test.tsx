@@ -35,15 +35,21 @@ describe("Global layout & registration flow", () => {
     const header = screen.getByRole("banner");
 
     expect(header).toHaveAttribute("data-hidden", "false");
+    expect(header.className).toContain("border-b-[3px]");
+    expect(header.className).toContain("border-ink");
 
     setScrollY(150);
     expect(header).toHaveAttribute("data-hidden", "true");
 
     setScrollY(100);
     expect(header).toHaveAttribute("data-hidden", "false");
+    expect(header.className).toContain("border-b-[3px]");
+    expect(header.className).toContain("border-ink");
 
     setScrollY(0);
     expect(header).toHaveAttribute("data-hidden", "false");
+    expect(header.className).toContain("border-b-[3px]");
+    expect(header.className).toContain("border-ink");
   });
 
   it("marks active route link and falls back to /events link when no upcoming event exists", () => {
@@ -51,9 +57,23 @@ describe("Global layout & registration flow", () => {
 
     const workLink = screen.getByRole("link", { name: "Work" });
     expect(workLink).toHaveAttribute("aria-current", "page");
+    expect(workLink.className).not.toContain("underline");
+    expect(workLink.className).not.toContain("shadow");
+    expect(workLink.className).toContain("text-[15.5px]");
 
     const registerLink = screen.getByRole("link", { name: "Register" });
     expect(registerLink).toHaveAttribute("href", "/events");
+
+    const homeLinks = screen.getAllByRole("link", { name: "Home" });
+    expect(homeLinks).toHaveLength(1);
+    expect(homeLinks[0]).toHaveAttribute("href", "/");
+    expect(homeLinks[0]?.className).not.toContain("text-ink/");
+
+    const aboutLink = screen.getByRole("link", { name: "About" });
+    expect(aboutLink).toHaveAttribute("href", "/about");
+
+    const servicesLink = screen.getByRole("link", { name: "Services" });
+    expect(servicesLink).toHaveAttribute("href", "/services");
   });
 
   it("opens MobileMenu, locks body scroll, never hides Navbar, and closes on Escape", async () => {
@@ -155,6 +175,22 @@ describe("Global layout & registration flow", () => {
 
     const results = await axe(container);
     expect(results).toHaveNoViolations();
+  });
+
+  it("renders Footer with social icons, full-bleed legal divider, and unclipped giant wordmark", () => {
+    const { container } = render(<Footer />);
+
+    for (const platform of ["Instagram", "YouTube", "LinkedIn", "X"]) {
+      const link = screen.getByRole("link", { name: platform });
+      expect(link.querySelector("svg")).toBeInTheDocument();
+    }
+
+    const divider = container.querySelector("footer > div.border-t");
+    expect(divider).toBeInTheDocument();
+
+    const giantWordmarkWrapper = container.querySelector("footer > div[aria-hidden='true']");
+    expect(giantWordmarkWrapper).toBeInTheDocument();
+    expect(giantWordmarkWrapper).not.toHaveStyle({ height: "0.8em" });
   });
 });
 

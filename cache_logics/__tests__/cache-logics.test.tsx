@@ -113,9 +113,15 @@ describe("cache_logics & modular registries", () => {
     expect(WORK_CATEGORIES).toContain("live_event");
     expect(formatStudioContactSummary()).toContain(site.city);
 
+    expect(routes.serviceAnchor("film")).toBe("/services#film");
     expect(isNavRouteActive("/work", routes.work)).toBe(true);
     expect(isNavRouteActive("/work/detail", routes.work)).toBe(true);
+    expect(isNavRouteActive("/about", routes.about)).toBe(true);
+    expect(isNavRouteActive("/services", routes.services)).toBe(true);
+    expect(isNavRouteActive("/", routes.home)).toBe(true);
+    expect(isNavRouteActive("/", routes.home, false)).toBe(false);
     expect(isNavRouteActive("/", routes.services)).toBe(false);
+    expect(isNavRouteActive("/services", routes.serviceAnchor("film"))).toBe(false);
 
     const meta = createPageMetadata({
       title: "Work",
