@@ -16,7 +16,7 @@ export default function PrivacyPage() {
     <LegalPageLayout title={content.legal.privacyTitle}>
       <p className="text-muted">{content.legal.privacyBody}</p>
       <p className="text-muted">
-        {content.legal.privacyQuestionsPrefix} {site.email} • {site.city}
+        {content.legal.privacyQuestionsPrefix} {site.email} • {site.address}
       </p>
     </LegalPageLayout>
   );

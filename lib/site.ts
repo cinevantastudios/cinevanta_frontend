@@ -90,10 +90,15 @@ export interface SiteConfig {
   name: string;
   wordmark: string;
   shortMark: string;
+  proprietorName: string;
+  legalStructure: string;
+  streetAddress: string;
   locality: string;
+  postalCode: string;
   countryName: string;
   countryCode: string;
   city: string;
+  address: string;
   locale: string;
   ogLocale: string;
   htmlLang: string;
@@ -111,7 +116,11 @@ export interface SiteConfig {
 
 const STUDIO_NAME = "Cinevanta Studios";
 const STUDIO_WORDMARK = "Cinevanta";
+const STUDIO_PROPRIETOR_NAME = "Amit Kumar";
+const STUDIO_LEGAL_STRUCTURE = "Sole proprietorship";
+const STUDIO_STREET_ADDRESS = "183, Pocket A, Mayur Vihar";
 const STUDIO_LOCALITY = "Delhi";
+const STUDIO_POSTAL_CODE = "110091";
 const STUDIO_COUNTRY_NAME = "India";
 const STUDIO_FOUNDED_YEAR = 2026;
 
@@ -120,10 +129,15 @@ export const site: SiteConfig = {
   name: STUDIO_NAME,
   wordmark: STUDIO_WORDMARK,
   shortMark: `${STUDIO_WORDMARK.charAt(0).toUpperCase()}*`,
+  proprietorName: STUDIO_PROPRIETOR_NAME,
+  legalStructure: STUDIO_LEGAL_STRUCTURE,
+  streetAddress: STUDIO_STREET_ADDRESS,
   locality: STUDIO_LOCALITY,
+  postalCode: STUDIO_POSTAL_CODE,
   countryName: STUDIO_COUNTRY_NAME,
   countryCode: "IN",
   city: `${STUDIO_LOCALITY}, ${STUDIO_COUNTRY_NAME}`,
+  address: `${STUDIO_STREET_ADDRESS}, ${STUDIO_LOCALITY} – ${STUDIO_POSTAL_CODE}, ${STUDIO_COUNTRY_NAME}`,
   locale: "en-IN",
   ogLocale: "en_IN",
   htmlLang: "en",

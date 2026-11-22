@@ -12,9 +12,15 @@ export function buildOrganizationJsonLd(): Record<string, unknown> {
     "@type": "Organization",
     name: site.name,
     url: site.url,
+    founder: {
+      "@type": "Person",
+      name: site.proprietorName,
+    },
     address: {
       "@type": "PostalAddress",
+      streetAddress: site.streetAddress,
       addressLocality: site.locality,
+      postalCode: site.postalCode,
       addressCountry: site.countryCode,
     },
   };

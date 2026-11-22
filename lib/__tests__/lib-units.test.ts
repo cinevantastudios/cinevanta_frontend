@@ -268,7 +268,20 @@ describe("lib/env, lib/utils, lib/validators, lib/tracking, lib/analytics & lib/
   describe("lib/site & lib/content single source of truth", () => {
     it("derives dynamic studio copy and route links from site and routes registries", () => {
       expect(site.shortMark).toBe("C*");
+      expect(site.proprietorName).toBe("Amit Kumar");
+      expect(site.legalStructure).toBe("Sole proprietorship");
+      expect(site.streetAddress).toBe("183, Pocket A, Mayur Vihar");
+      expect(site.postalCode).toBe("110091");
       expect(site.city).toContain(site.locality);
+      expect(site.address).toContain(site.streetAddress);
+      expect(site.address).toContain(site.postalCode);
+      expect(content.about.proprietorName).toBe(site.proprietorName);
+      expect(content.about.proprietorSticker).toBe(site.legalStructure);
+      expect(content.about.facts.find((fact) => fact.label === "Address")?.value).toBe(
+        site.address,
+      );
+      expect(content.legal.termsBody).toContain(site.proprietorName);
+      expect(content.legal.termsBody).toContain(site.address);
       expect(content.meta.titleTemplate).toContain(site.name);
       expect(content.hero.kicker).toContain(site.locality);
       expect(content.nav.links.map((l) => l.label)).toEqual([

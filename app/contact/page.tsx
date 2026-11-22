@@ -65,8 +65,8 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
                   <dd className="mt-1 font-medium text-ink">{site.phone}</dd>
                 </div>
                 <div>
-                  <dt className="font-meta text-muted">Location</dt>
-                  <dd className="mt-1 font-medium text-ink">{site.city}</dd>
+                  <dt className="font-meta text-muted">Address</dt>
+                  <dd className="mt-1 font-medium text-ink">{site.address}</dd>
                 </div>
               </dl>
 

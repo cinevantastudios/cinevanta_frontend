@@ -55,7 +55,7 @@ export function Footer() {
             <ul className="space-y-1.5 text-[0.9375rem] text-muted-on-ink">
               <li>{site.email}</li>
               <li>{site.phone}</li>
-              <li>{site.city}</li>
+              <li>{site.address}</li>
             </ul>
             <SocialLinks socials={site.socials} surface="ink" className="pt-2" />
           </div>

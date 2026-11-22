@@ -6,6 +6,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { RegisterButton } from "@/components/events/RegisterButton";
 import * as api from "@/lib/api-client";
+import { site } from "@/lib/site";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/work",
@@ -177,8 +178,10 @@ describe("Global layout & registration flow", () => {
     expect(results).toHaveNoViolations();
   });
 
-  it("renders Footer with social icons, full-bleed legal divider, and unclipped giant wordmark", () => {
+  it("renders Footer with studio address, social icons, full-bleed legal divider, and unclipped giant wordmark", () => {
     const { container } = render(<Footer />);
+
+    expect(screen.getByText(site.address)).toBeInTheDocument();
 
     for (const platform of ["Instagram", "YouTube", "LinkedIn", "X"]) {
       const link = screen.getByRole("link", { name: platform });

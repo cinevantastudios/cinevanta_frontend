@@ -12,16 +12,19 @@ import GlobalError from "@/app/global-error";
 import RootLoading from "@/app/loading";
 import manifest from "@/app/manifest";
 import HomePage from "@/app/page";
+import PrivacyPage from "@/app/privacy/page";
 import robots from "@/app/robots";
 import ServicesLoading from "@/app/services/loading";
 import ServicesPage from "@/app/services/page";
 import sitemap from "@/app/sitemap";
 import StyleguidePage from "@/app/styleguide/page";
+import TermsPage from "@/app/terms/page";
 import WorkLoading from "@/app/work/loading";
 import WorkPage from "@/app/work/page";
-import { JsonLd } from "@/components/seo/JsonLd";
+import { buildOrganizationJsonLd, JsonLd } from "@/components/seo/JsonLd";
 import * as analytics from "@/lib/analytics";
 import * as api from "@/lib/api-client";
+import { site } from "@/lib/site";
 
 const notFoundMock = vi.fn(() => {
   throw new Error("NEXT_NOT_FOUND");
@@ -111,6 +114,7 @@ describe("App Router pages, loading boundaries, metadata routes & JSON-LD securi
     });
     const { unmount: unmountContact } = render(contactJsx);
     expect(screen.getByLabelText("Enquiry type")).toHaveValue("corporate");
+    expect(screen.getByText(site.address)).toBeInTheDocument();
     unmountContact();
 
     // AboutPage & ServicesPage render full themed sections with zero axe violations
@@ -118,8 +122,33 @@ describe("App Router pages, loading boundaries, metadata routes & JSON-LD securi
     expect(screen.getByRole("heading", { level: 1, name: "About" })).toBeInTheDocument();
     expect(screen.getByText("From script to stage")).toBeInTheDocument();
     expect(screen.getByText("Leadership")).toBeInTheDocument();
+    expect(screen.getByText(site.proprietorName)).toBeInTheDocument();
+    expect(screen.getByText(site.address)).toBeInTheDocument();
     expect(await axe(aboutContainer)).toHaveNoViolations();
     unmountAbout();
+
+    // PrivacyPage & TermsPage render proprietorship/address details with zero axe violations
+    const { container: privacyContainer, unmount: unmountPrivacy } = render(<PrivacyPage />);
+    expect(screen.getByText(new RegExp(site.postalCode))).toBeInTheDocument();
+    expect(await axe(privacyContainer)).toHaveNoViolations();
+    unmountPrivacy();
+
+    const { container: termsContainer, unmount: unmountTerms } = render(<TermsPage />);
+    expect(screen.getByText(new RegExp(site.proprietorName))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(site.postalCode))).toBeInTheDocument();
+    expect(await axe(termsContainer)).toHaveNoViolations();
+    unmountTerms();
+
+    // Organization JSON-LD includes founder and full business postal address
+    const orgJsonLd = buildOrganizationJsonLd();
+    expect(orgJsonLd.founder).toEqual({ "@type": "Person", name: site.proprietorName });
+    expect(orgJsonLd.address).toEqual({
+      "@type": "PostalAddress",
+      streetAddress: site.streetAddress,
+      addressLocality: site.locality,
+      postalCode: site.postalCode,
+      addressCountry: site.countryCode,
+    });
 
     const { container: servicesContainer, unmount: unmountServices } = render(<ServicesPage />);
     expect(screen.getByRole("heading", { level: 1, name: "Services" })).toBeInTheDocument();
