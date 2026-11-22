@@ -14,26 +14,23 @@ export const themeColors = {
   lineOnInk: "#5A5148",
 } as const;
 
-/** Canonical application route paths and query URL builders so navigation, CTAs, and sitemaps share one source of truth. */
+/** Canonical application route paths and one-page section anchors so navigation, CTAs, and sitemaps share one source of truth. */
 export const routes = {
   home: "/",
-  services: "/services",
-  work: "/work",
-  events: "/events",
-  about: "/about",
-  contact: "/contact",
+  services: "/#services",
+  work: "/#work",
+  events: "/#events",
+  about: "/#about",
+  contact: "/#contact",
   privacy: "/privacy",
   terms: "/terms",
   styleguide: "/styleguide",
-  serviceAnchor: (category: WorkCategory) => `/services#${category}`,
-  workByCategory: (category?: WorkCategory | "all") =>
-    !category || category === "all" ? "/work" : `/work?category=${category}`,
-  eventsByStatus: (status?: EventStatus) =>
-    !status ? "/events" : `/events?status=${status}`,
-  eventAnchor: (status: EventStatus, slug: string) =>
-    `/events?status=${status}#${encodeURIComponent(slug)}`,
-  contactByType: (type?: EnquiryType) =>
-    !type ? "/contact" : `/contact?type=${type}`,
+  serviceAnchor: (category: WorkCategory) => `/#${category}`,
+  workByCategory: (_category?: WorkCategory | "all") => "/#work",
+  eventsByStatus: (_status?: EventStatus) => "/#events",
+  eventAnchor: (_status: EventStatus, slug: string) =>
+    `/#${encodeURIComponent(slug)}`,
+  contactByType: (_type?: EnquiryType) => "/#contact",
 } as const;
 
 /** Centralized pagination and section item-count limits across home, work, events, and ad strip. */

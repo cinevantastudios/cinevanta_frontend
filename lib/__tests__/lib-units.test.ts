@@ -289,7 +289,6 @@ describe("lib/env, lib/utils, lib/validators, lib/tracking, lib/analytics & lib/
         "About",
         "Services",
         "Work",
-        "Events",
         "Contact",
       ]);
       expect(content.nav.links.find((l) => l.label === "Home")?.href).toBe(routes.home);

@@ -1,25 +1,24 @@
 import Link from "next/link";
 import { Container } from "@/components/ui";
-import { FooterNotifyForm } from "@/components/layout/FooterNotifyForm";
 import { SocialLinks } from "@/components/layout/SocialLinks";
 import { Wordmark } from "@/components/layout/Wordmark";
 import { content } from "@/lib/content";
 import { routes, site } from "@/lib/site";
 
 /**
- * Global site footer with navigation links, studio contact placeholders, SocialLinks,
- * FooterNotifyForm, full-bleed legal divider, legal links, and the full outlined display wordmark.
+ * Basic fast-track global site footer with brand summary, navigation links,
+ * studio contact details, social links, and copyright bar.
  */
 export function Footer() {
   return (
     <footer
       data-surface="ink"
-      className="bg-ink pt-14 text-cream md:pt-[4.5rem] lg:pt-[5.5rem]"
+      className="bg-ink pt-12 text-cream md:pt-14"
     >
       <Container>
-        <div className="grid grid-cols-1 gap-10 pb-12 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+        <div className="grid grid-cols-1 gap-10 pb-10 md:grid-cols-3 lg:grid-cols-12 lg:gap-8">
           {/* Brand */}
-          <div className="space-y-4 lg:col-span-4">
+          <div className="space-y-4 lg:col-span-5">
             <Link href={routes.home} aria-label={content.nav.homeAriaLabel} className="inline-block">
               <Wordmark size="md" tone="cream" />
             </Link>
@@ -29,7 +28,7 @@ export function Footer() {
           </div>
 
           {/* Nav links */}
-          <div className="space-y-3 lg:col-span-2">
+          <div className="space-y-3 lg:col-span-3">
             <h2 className="text-[0.875rem] font-semibold text-cream">
               {content.footer.navHeading}
             </h2>
@@ -48,7 +47,7 @@ export function Footer() {
           </div>
 
           {/* Contact + socials */}
-          <div className="space-y-3 lg:col-span-3">
+          <div className="space-y-3 lg:col-span-4">
             <h2 className="text-[0.875rem] font-semibold text-cream">
               {content.footer.contactHeading}
             </h2>
@@ -59,50 +58,16 @@ export function Footer() {
             </ul>
             <SocialLinks socials={site.socials} surface="ink" className="pt-2" />
           </div>
-
-          {/* Notify form */}
-          <div className="lg:col-span-3">
-            <FooterNotifyForm />
-          </div>
         </div>
-
       </Container>
 
-      {/* Full-bleed bottom legal bar */}
+      {/* Bottom copyright bar */}
       <div className="border-t border-line-on-ink">
         <Container>
-          <div className="flex flex-col gap-3 py-6 text-[0.875rem] text-muted-on-ink sm:flex-row sm:items-center sm:justify-between">
+          <div className="py-6 text-[0.875rem] text-muted-on-ink">
             <p>{site.copyright}</p>
-            <div className="flex items-center gap-6">
-              <Link
-                href={routes.privacy}
-                className="inline-flex min-h-[2.25rem] items-center transition-colors duration-150 hover:text-yellow"
-              >
-                {content.footer.privacyLabel}
-              </Link>
-              <Link
-                href={routes.terms}
-                className="inline-flex min-h-[2.25rem] items-center transition-colors duration-150 hover:text-yellow"
-              >
-                {content.footer.termsLabel}
-              </Link>
-            </div>
           </div>
         </Container>
-      </div>
-
-      {/* Giant outlined wordmark */}
-      <div
-        aria-hidden="true"
-        className="text-wordmark-giant w-full overflow-x-hidden pb-4 text-center md:pb-6"
-      >
-        <Wordmark
-          size="giant"
-          tone="cream"
-          withAsterisk={false}
-          outlined
-          className="leading-[1.05]"
-        />
       </div>
     </footer>
   );

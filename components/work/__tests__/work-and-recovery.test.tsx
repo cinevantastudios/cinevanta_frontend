@@ -191,7 +191,7 @@ describe("WorkDialog, SafeImage, WorkGrid resilience, HeroMedia & ErrorPage", ()
     expect(reportSpy).toHaveBeenCalledTimes(1);
     expect(screen.queryByText(/Secret DB crash/)).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Back to home" })).toHaveAttribute("href", "/");
-    expect(screen.getByRole("link", { name: "Contact us" })).toHaveAttribute("href", "/contact");
+    expect(screen.getByRole("link", { name: "Contact us" })).toHaveAttribute("href", "/#contact");
 
     await user.click(screen.getByRole("button", { name: "Try again" }));
     expect(resetFn).toHaveBeenCalledTimes(1);

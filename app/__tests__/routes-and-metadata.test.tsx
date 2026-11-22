@@ -92,35 +92,38 @@ describe("App Router pages, loading boundaries, metadata routes & JSON-LD securi
     expect(screen.getByText(/What we do/i)).toBeInTheDocument();
     unmountHome();
 
-    // EventsPage with status=past searchParam
+    // EventsPage renders upcoming and past events
     const eventsJsx = await EventsPage({
       searchParams: Promise.resolve({ status: "past" }),
     });
-    const { unmount: unmountEvents } = render(eventsJsx);
-    expect(screen.getByRole("tab", { name: "Past" })).toHaveAttribute("aria-selected", "true");
+    const { container: eventsContainer, unmount: unmountEvents } = render(eventsJsx);
+    expect(screen.getByRole("heading", { level: 1, name: "Events" })).toBeInTheDocument();
+    expect(screen.getByText("[Event Name 1]")).toBeInTheDocument();
+    expect(await axe(eventsContainer)).toHaveNoViolations();
     unmountEvents();
 
-    // WorkPage with category=film searchParam and fallback on invalid category
+    // WorkPage with category=film searchParam
     const workJsx = await WorkPage({
       searchParams: Promise.resolve({ category: ["film"] }),
     });
-    const { unmount: unmountWork } = render(workJsx);
-    expect(screen.getByRole("button", { name: "Film" })).toHaveAttribute("aria-pressed", "true");
+    const { container: workContainer, unmount: unmountWork } = render(workJsx);
+    expect(screen.getByRole("heading", { level: 1, name: "Work" })).toBeInTheDocument();
+    expect(screen.getByText("[Project Title 1]")).toBeInTheDocument();
+    expect(await axe(workContainer)).toHaveNoViolations();
     unmountWork();
 
-    // ContactPage with type=corporate searchParam
+    // ContactPage renders direct studio contact details without enquiry form
     const contactJsx = await ContactPage({
       searchParams: Promise.resolve({ type: "corporate" }),
     });
     const { unmount: unmountContact } = render(contactJsx);
-    expect(screen.getByLabelText("Enquiry type")).toHaveValue("corporate");
     expect(screen.getByText(site.address)).toBeInTheDocument();
+    expect(screen.queryByLabelText("Enquiry type")).not.toBeInTheDocument();
     unmountContact();
 
     // AboutPage & ServicesPage render full themed sections with zero axe violations
     const { container: aboutContainer, unmount: unmountAbout } = render(<AboutPage />);
     expect(screen.getByRole("heading", { level: 1, name: "About" })).toBeInTheDocument();
-    expect(screen.getByText("From script to stage")).toBeInTheDocument();
     expect(screen.getByText("Leadership")).toBeInTheDocument();
     expect(screen.getByText(site.proprietorName)).toBeInTheDocument();
     expect(screen.getByText(site.address)).toBeInTheDocument();
@@ -152,8 +155,7 @@ describe("App Router pages, loading boundaries, metadata routes & JSON-LD securi
 
     const { container: servicesContainer, unmount: unmountServices } = render(<ServicesPage />);
     expect(screen.getByRole("heading", { level: 1, name: "Services" })).toBeInTheDocument();
-    expect(screen.getByText("How a production runs")).toBeInTheDocument();
-    expect(screen.getByText("Who we build with")).toBeInTheDocument();
+    expect(screen.getByText("Film & Content")).toBeInTheDocument();
     expect(await axe(servicesContainer)).toHaveNoViolations();
     unmountServices();
   });

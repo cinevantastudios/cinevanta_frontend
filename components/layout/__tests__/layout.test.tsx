@@ -1,37 +1,24 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { RegisterButton } from "@/components/events/RegisterButton";
 import * as api from "@/lib/api-client";
-import { site } from "@/lib/site";
+import { routes, site } from "@/lib/site";
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/work",
+  usePathname: () => "/",
 }));
 
-function setScrollY(value: number) {
-  Object.defineProperty(window, "scrollY", {
-    configurable: true,
-    writable: true,
-    value,
-  });
-  fireEvent.scroll(window);
-}
-
-describe("Global layout & registration flow", () => {
-  beforeEach(() => {
-    setScrollY(0);
-  });
-
+describe("Global layout & registration flow (one-page scroll fast-track version)", () => {
   afterEach(() => {
     vi.restoreAllMocks();
     document.body.style.overflow = "";
   });
 
-  it("hides Navbar on scroll down and shows it again on scroll up", () => {
+  it("renders static sticky Navbar with one-page scroll anchor links and border divider", () => {
     render(<Navbar nextEvent={{ id: "evt-1", title: "[Event Name 1]" }} />);
     const header = screen.getByRole("banner");
 
@@ -39,45 +26,19 @@ describe("Global layout & registration flow", () => {
     expect(header.className).toContain("border-b-[3px]");
     expect(header.className).toContain("border-ink");
 
-    setScrollY(150);
-    expect(header).toHaveAttribute("data-hidden", "true");
+    const homeLink = screen.getByRole("link", { name: "Home" });
+    expect(homeLink).toHaveAttribute("aria-current", "page");
+    expect(homeLink.className).toContain("text-[15.5px]");
 
-    setScrollY(100);
-    expect(header).toHaveAttribute("data-hidden", "false");
-    expect(header.className).toContain("border-b-[3px]");
-    expect(header.className).toContain("border-ink");
-
-    setScrollY(0);
-    expect(header).toHaveAttribute("data-hidden", "false");
-    expect(header.className).toContain("border-b-[3px]");
-    expect(header.className).toContain("border-ink");
+    expect(screen.getByRole("link", { name: "About" })).toHaveAttribute("href", routes.about);
+    expect(screen.getByRole("link", { name: "Services" })).toHaveAttribute("href", routes.services);
+    expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute("href", routes.work);
+    expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute("href", routes.contact);
+    expect(screen.queryByRole("link", { name: "Events" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Register" })).not.toBeInTheDocument();
   });
 
-  it("marks active route link and falls back to /events link when no upcoming event exists", () => {
-    render(<Navbar nextEvent={null} />);
-
-    const workLink = screen.getByRole("link", { name: "Work" });
-    expect(workLink).toHaveAttribute("aria-current", "page");
-    expect(workLink.className).not.toContain("underline");
-    expect(workLink.className).not.toContain("shadow");
-    expect(workLink.className).toContain("text-[15.5px]");
-
-    const registerLink = screen.getByRole("link", { name: "Register" });
-    expect(registerLink).toHaveAttribute("href", "/events");
-
-    const homeLinks = screen.getAllByRole("link", { name: "Home" });
-    expect(homeLinks).toHaveLength(1);
-    expect(homeLinks[0]).toHaveAttribute("href", "/");
-    expect(homeLinks[0]?.className).not.toContain("text-ink/");
-
-    const aboutLink = screen.getByRole("link", { name: "About" });
-    expect(aboutLink).toHaveAttribute("href", "/about");
-
-    const servicesLink = screen.getByRole("link", { name: "Services" });
-    expect(servicesLink).toHaveAttribute("href", "/services");
-  });
-
-  it("opens MobileMenu, locks body scroll, never hides Navbar, and closes on Escape", async () => {
+  it("opens MobileMenu, locks body scroll, and closes on Escape", async () => {
     const user = userEvent.setup();
     render(<Navbar nextEvent={{ id: "evt-1", title: "[Event Name 1]" }} />);
 
@@ -89,9 +50,6 @@ describe("Global layout & registration flow", () => {
       "aria-hidden",
       "false",
     );
-
-    setScrollY(240);
-    expect(screen.getByRole("banner")).toHaveAttribute("data-hidden", "false");
 
     await user.keyboard("{Escape}");
     expect(document.body.style.overflow).toBe("");
@@ -148,10 +106,7 @@ describe("Global layout & registration flow", () => {
     expect(trigger).toHaveFocus();
   });
 
-  it("submits Footer notify form with source=footer and passes axe checks for Navbar + Footer", async () => {
-    const user = userEvent.setup();
-    const postSpy = vi.spyOn(api, "postSubscriber").mockResolvedValue({ ok: true });
-
+  it("renders Footer with studio address, social icons, legal divider, and passes axe checks", async () => {
     const { container } = render(
       <div>
         <Navbar nextEvent={{ id: "evt-1", title: "[Event Name 1]" }} />
@@ -162,25 +117,6 @@ describe("Global layout & registration flow", () => {
       </div>,
     );
 
-    const emailInput = screen.getByLabelText("Email address");
-    await user.type(emailInput, "fan@example.com");
-    await user.click(screen.getByRole("button", { name: "Notify me" }));
-
-    await waitFor(() => {
-      expect(screen.getByText("Done. We will be in touch.")).toBeInTheDocument();
-    });
-    expect(postSpy).toHaveBeenCalledWith({
-      email: "fan@example.com",
-      source: "footer",
-    });
-
-    const results = await axe(container);
-    expect(results).toHaveNoViolations();
-  });
-
-  it("renders Footer with studio address, social icons, full-bleed legal divider, and unclipped giant wordmark", () => {
-    const { container } = render(<Footer />);
-
     expect(screen.getByText(site.address)).toBeInTheDocument();
 
     for (const platform of ["Instagram", "YouTube", "LinkedIn", "X"]) {
@@ -190,10 +126,10 @@ describe("Global layout & registration flow", () => {
 
     const divider = container.querySelector("footer > div.border-t");
     expect(divider).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Privacy" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Terms" })).not.toBeInTheDocument();
 
-    const giantWordmarkWrapper = container.querySelector("footer > div[aria-hidden='true']");
-    expect(giantWordmarkWrapper).toBeInTheDocument();
-    expect(giantWordmarkWrapper).not.toHaveStyle({ height: "0.8em" });
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 });
-

@@ -97,12 +97,12 @@ describe("cache_logics & modular registries", () => {
   });
 
   it("exposes centralized route builders, apiEndpoints, limits, constraints, and metadata factories", () => {
-    expect(routes.workByCategory()).toBe("/work");
-    expect(routes.workByCategory("all")).toBe("/work");
-    expect(routes.workByCategory("film")).toBe("/work?category=film");
-    expect(routes.eventsByStatus("past")).toBe("/events?status=past");
-    expect(routes.eventAnchor("upcoming", "film-gala")).toBe("/events?status=upcoming#film-gala");
-    expect(routes.contactByType("corporate")).toBe("/contact?type=corporate");
+    expect(routes.workByCategory()).toBe("/#work");
+    expect(routes.workByCategory("all")).toBe("/#work");
+    expect(routes.workByCategory("film")).toBe("/#work");
+    expect(routes.eventsByStatus("past")).toBe("/#events");
+    expect(routes.eventAnchor("upcoming", "film-gala")).toBe("/#film-gala");
+    expect(routes.contactByType("corporate")).toBe("/#contact");
 
     expect(apiEndpoints.adTrack("ad 1", "impression")).toBe("/api/ads/ad%201/impression");
     expect(networkConfig.revalidateSeconds).toBe(PAGE_REVALIDATE_SECONDS);
@@ -113,14 +113,12 @@ describe("cache_logics & modular registries", () => {
     expect(WORK_CATEGORIES).toContain("live_event");
     expect(formatStudioContactSummary()).toContain(site.city);
 
-    expect(routes.serviceAnchor("film")).toBe("/services#film");
-    expect(isNavRouteActive("/work", routes.work)).toBe(true);
-    expect(isNavRouteActive("/work/detail", routes.work)).toBe(true);
-    expect(isNavRouteActive("/about", routes.about)).toBe(true);
-    expect(isNavRouteActive("/services", routes.services)).toBe(true);
+    expect(routes.serviceAnchor("film")).toBe("/#film");
     expect(isNavRouteActive("/", routes.home)).toBe(true);
     expect(isNavRouteActive("/", routes.home, false)).toBe(false);
     expect(isNavRouteActive("/", routes.services)).toBe(false);
+    expect(isNavRouteActive("/", routes.work)).toBe(false);
+    expect(isNavRouteActive("/", routes.about)).toBe(false);
     expect(isNavRouteActive("/services", routes.serviceAnchor("film"))).toBe(false);
 
     const meta = createPageMetadata({

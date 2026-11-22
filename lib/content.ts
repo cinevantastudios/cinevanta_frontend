@@ -60,7 +60,6 @@ const PRIMARY_NAV_LINKS: readonly NavLinkItem[] = [
   { label: "About", href: routes.about },
   { label: "Services", href: routes.services },
   { label: "Work", href: routes.work },
-  { label: "Events", href: routes.events },
   { label: "Contact", href: routes.contact },
 ];
 
@@ -101,7 +100,7 @@ export const content = {
     outlinedLineIndex: 2,
     lead: "We develop, produce and present films, advertising and live entertainment.",
     primaryCta: { label: "See our work", href: routes.work },
-    secondaryCta: { label: "Upcoming events", href: routes.events },
+    secondaryCta: { label: "Contact us", href: routes.contact },
     badgeRingText: `FILMS ✦ ADS ✦ LIVE ✦ EST. ${site.foundedYear} ✦`,
     badgeCenter: site.shortMark,
     showreelLabel: "Showreel",

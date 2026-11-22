@@ -3,7 +3,6 @@ import { Archivo, DM_Mono, Inter } from "next/font/google";
 import { ToastProvider } from "@/components/ui";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
-import { getEvents } from "@/lib/api-client";
 import { content } from "@/lib/content";
 import { site } from "@/lib/site";
 import "./globals.css";
@@ -29,7 +28,7 @@ const dmMono = DM_Mono({
   display: "swap",
 });
 
-/** Revalidate root layout event lookup every 60 seconds so static pages stay edge-cached. */
+/** Revalidate root layout every 60 seconds so static pages stay edge-cached. */
 export const revalidate = 60;
 
 export const metadata: Metadata = {
@@ -54,16 +53,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const upcomingEvents = await getEvents("upcoming");
-  const nextEvent = upcomingEvents[0]
-    ? { id: upcomingEvents[0].id, title: upcomingEvents[0].title }
-    : null;
-
   return (
     <html
       lang={site.htmlLang}
@@ -77,7 +71,7 @@ export default async function RootLayout({
           {content.nav.skipToContent}
         </a>
         <ToastProvider>
-          <Navbar nextEvent={nextEvent} />
+          <Navbar />
           <div className="flex-1">{children}</div>
           <Footer />
         </ToastProvider>

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
-import { Button } from "@/components/ui";
 import { Wordmark } from "@/components/layout/Wordmark";
 import { content } from "@/lib/content";
 import { routes } from "@/lib/site";
@@ -24,9 +23,7 @@ const FOCUSABLE_SELECTOR =
 export function MobileMenu({
   open,
   onClose,
-  onRegister,
   pathname,
-  nextEvent,
   triggerRef,
 }: MobileMenuProps) {
   const overlayRef = useRef<HTMLDivElement | null>(null);
@@ -123,8 +120,7 @@ export function MobileMenu({
         </button>
       </div>
 
-      {/* Full-screen mobile nav links mirroring desktop lift/tilt hover and size-only active indicator. */}
-      <nav aria-label={content.nav.mobileNavLabel} className="flex flex-1 flex-col justify-center px-5">
+      <nav aria-label={content.nav.mobileNavLabel} className="flex flex-1 flex-col justify-center px-5 pb-12">
         <ul className="space-y-4">
           {content.nav.links.map((item) => {
             const isActive = isNavRouteActive(pathname, item.href, item.matchActive);
@@ -138,10 +134,6 @@ export function MobileMenu({
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
                     "font-display-expanded text-h2 inline-block origin-left py-1 text-ink",
-                    "transition-transform duration-200 ease-[var(--ease-move)]",
-                    "hover:-translate-y-0.5 hover:rotate-[0.6deg]",
-                    "focus-visible:-translate-y-0.5 focus-visible:rotate-[0.6deg]",
-                    "motion-reduce:transform-none",
                     isActive && "scale-[1.08]",
                   )}
                 >
@@ -152,35 +144,6 @@ export function MobileMenu({
           })}
         </ul>
       </nav>
-
-      <div className="px-5 pb-8">
-        {nextEvent ? (
-          <Button
-            type="button"
-            variant="ink"
-            withArrow
-            fullWidth
-            tabIndex={open ? 0 : -1}
-            onClick={() => {
-              onClose();
-              onRegister?.();
-            }}
-          >
-            {content.nav.registerLabel}
-          </Button>
-        ) : (
-          <Button
-            href={routes.events}
-            variant="ink"
-            withArrow
-            fullWidth
-            tabIndex={open ? 0 : -1}
-            onClick={onClose}
-          >
-            {content.nav.registerLabel}
-          </Button>
-        )}
-      </div>
     </div>
   );
 }
