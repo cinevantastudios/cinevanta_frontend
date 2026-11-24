@@ -116,12 +116,26 @@ export default async function HomePage() {
               <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
                 <div>
                   <p className="font-meta text-muted">Email</p>
-                  <p className="mt-2 text-[1.125rem] font-semibold text-ink">{site.email}</p>
+                  <p className="mt-2 text-[1.125rem] font-semibold text-ink">
+                    <a
+                      href={`mailto:${site.email}`}
+                      className="underline decoration-2 underline-offset-4 transition-opacity duration-150 hover:opacity-75"
+                    >
+                      {site.email}
+                    </a>
+                  </p>
                 </div>
 
                 <div>
                   <p className="font-meta text-muted">Phone</p>
-                  <p className="mt-2 text-[1.125rem] font-semibold text-ink">{site.phone}</p>
+                  <p className="mt-2 text-[1.125rem] font-semibold text-ink">
+                    <a
+                      href={`tel:${site.phone}`}
+                      className="underline decoration-2 underline-offset-4 transition-opacity duration-150 hover:opacity-75"
+                    >
+                      {site.phone}
+                    </a>
+                  </p>
                 </div>
 
                 <div>

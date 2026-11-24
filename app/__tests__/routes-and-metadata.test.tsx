@@ -108,7 +108,7 @@ describe("App Router pages, loading boundaries, metadata routes & JSON-LD securi
     });
     const { container: workContainer, unmount: unmountWork } = render(workJsx);
     expect(screen.getByRole("heading", { level: 1, name: "Work" })).toBeInTheDocument();
-    expect(screen.getByText("[Project Title 1]")).toBeInTheDocument();
+    expect(screen.getByText("Kutumb: The Family")).toBeInTheDocument();
     expect(await axe(workContainer)).toHaveNoViolations();
     unmountWork();
 

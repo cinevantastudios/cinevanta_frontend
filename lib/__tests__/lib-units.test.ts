@@ -268,7 +268,9 @@ describe("lib/env, lib/utils, lib/validators, lib/tracking, lib/analytics & lib/
   describe("lib/site & lib/content single source of truth", () => {
     it("derives dynamic studio copy and route links from site and routes registries", () => {
       expect(site.shortMark).toBe("C*");
-      expect(site.proprietorName).toBe("Amit Kumar");
+      expect(site.proprietorName).toBe("Amit Shree Yadav");
+      expect(site.email).toBe("amitshreeyadav@gmail.com");
+      expect(site.phone).toBe("+91 7992022400");
       expect(site.legalStructure).toBe("Sole proprietorship");
       expect(site.streetAddress).toBe("183, Pocket A, Mayur Vihar");
       expect(site.postalCode).toBe("110091");

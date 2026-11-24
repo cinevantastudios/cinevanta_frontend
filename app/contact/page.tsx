@@ -38,11 +38,25 @@ export default async function ContactPage(_props: ContactPageProps) {
             <dl className="grid grid-cols-1 gap-6 text-[1rem] md:grid-cols-3">
               <div>
                 <dt className="font-meta text-muted">Email</dt>
-                <dd className="mt-1 font-medium text-ink">{site.email}</dd>
+                <dd className="mt-1 font-medium text-ink">
+                  <a
+                    href={`mailto:${site.email}`}
+                    className="underline decoration-2 underline-offset-4 transition-opacity duration-150 hover:opacity-75"
+                  >
+                    {site.email}
+                  </a>
+                </dd>
               </div>
               <div>
                 <dt className="font-meta text-muted">Phone</dt>
-                <dd className="mt-1 font-medium text-ink">{site.phone}</dd>
+                <dd className="mt-1 font-medium text-ink">
+                  <a
+                    href={`tel:${site.phone}`}
+                    className="underline decoration-2 underline-offset-4 transition-opacity duration-150 hover:opacity-75"
+                  >
+                    {site.phone}
+                  </a>
+                </dd>
               </div>
               <div>
                 <dt className="font-meta text-muted">Address</dt>

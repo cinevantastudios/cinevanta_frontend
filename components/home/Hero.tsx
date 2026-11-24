@@ -1,6 +1,6 @@
-import { Button, Container, Placeholder, Sticker } from "@/components/ui";
+import { Button, Container, Placeholder, SafeImage, Sticker } from "@/components/ui";
 import { content } from "@/lib/content";
-import type { ShowreelMedia } from "@/lib/site";
+import { mediaConfig, type ShowreelMedia } from "@/lib/site";
 
 export interface HeroProps {
   showreel: ShowreelMedia | null;
@@ -9,7 +9,7 @@ export interface HeroProps {
 /**
  * Basic fast-track Hero section.
  * Presents the studio kicker, headline, lead copy, primary/secondary CTAs,
- * and a clean static showreel/studio preview frame.
+ * and a featured showreel/trailer preview frame.
  */
 export function Hero({ showreel }: HeroProps) {
   return (
@@ -50,21 +50,47 @@ export function Hero({ showreel }: HeroProps) {
             </div>
           </div>
 
-          {/* Static studio preview frame */}
+          {/* Featured trailer / showreel preview card */}
           <div className="lg:col-span-5">
-            <div className="overflow-hidden rounded-card border-2 border-ink bg-white p-3">
-              <div className="overflow-hidden rounded-[16px] border-2 border-ink">
-                <Placeholder
-                  tone="ink"
-                  ratio="16/9"
-                  label={showreel?.posterUrl ? content.hero.showreelLabel : content.hero.showreelPlaceholder}
-                />
+            {showreel?.posterUrl ? (
+              <a
+                href={showreel.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block overflow-hidden rounded-card border-2 border-ink bg-white p-3 transition-colors duration-150 hover:bg-sand"
+              >
+                <div className="relative aspect-video w-full overflow-hidden rounded-[16px] border-2 border-ink bg-ink">
+                  <SafeImage
+                    src={showreel.posterUrl}
+                    alt="Kutumb: The Family — Official Trailer"
+                    fill
+                    sizes={mediaConfig.dialogHeroSizes}
+                    className="object-cover"
+                    fallbackLabel={content.hero.showreelPlaceholder}
+                  />
+                </div>
+                <div className="flex items-center justify-between px-2 pt-3 pb-1">
+                  <span className="font-meta text-ink">
+                    Kutumb: The Family • Watch Trailer ↗
+                  </span>
+                  <span className="font-meta text-muted">{content.hero.kicker}</span>
+                </div>
+              </a>
+            ) : (
+              <div className="overflow-hidden rounded-card border-2 border-ink bg-white p-3">
+                <div className="overflow-hidden rounded-[16px] border-2 border-ink">
+                  <Placeholder
+                    tone="ink"
+                    ratio="16/9"
+                    label={content.hero.showreelPlaceholder}
+                  />
+                </div>
+                <div className="flex items-center justify-between px-2 pt-3 pb-1">
+                  <span className="font-meta text-ink">{content.hero.showreelLabel}</span>
+                  <span className="font-meta text-muted">{content.hero.kicker}</span>
+                </div>
               </div>
-              <div className="flex items-center justify-between px-2 pt-3 pb-1">
-                <span className="font-meta text-ink">{content.hero.showreelLabel}</span>
-                <span className="font-meta text-muted">{content.hero.kicker}</span>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </Container>

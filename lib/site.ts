@@ -36,7 +36,7 @@ export const routes = {
 /** Centralized pagination and section item-count limits across home, work, events, and ad strip. */
 export const displayLimits = {
   workPageSize: 9,
-  homeWorkPreviewCount: 3,
+  homeWorkPreviewCount: 6,
   homePastEventsCount: 4,
   maxAdSlides: 5,
 } as const;
@@ -113,7 +113,7 @@ export interface SiteConfig {
 
 const STUDIO_NAME = "Cinevanta Studios";
 const STUDIO_WORDMARK = "Cinevanta";
-const STUDIO_PROPRIETOR_NAME = "Amit Kumar";
+const STUDIO_PROPRIETOR_NAME = "Amit Shree Yadav";
 const STUDIO_LEGAL_STRUCTURE = "Sole proprietorship";
 const STUDIO_STREET_ADDRESS = "183, Pocket A, Mayur Vihar";
 const STUDIO_LOCALITY = "Delhi";
@@ -140,19 +140,22 @@ export const site: SiteConfig = {
   htmlLang: "en",
   timeZone: "Asia/Kolkata",
   foundedYear: STUDIO_FOUNDED_YEAR,
-  email: "[email]@[domain]",
-  phone: "[Phone]",
-  responseTime: "[We reply within X working days]",
+  email: "amitshreeyadav@gmail.com",
+  phone: "+91 7992022400",
+  responseTime: "We reply within 1–2 working days.",
   copyright: `© ${STUDIO_FOUNDED_YEAR} ${STUDIO_NAME}`,
   url: getEnvSiteUrl(),
-  showreel: null,
+  showreel: {
+    videoUrl: "https://www.youtube.com/watch?v=PUoXll37KB4",
+    posterUrl: "https://i.ytimg.com/vi/PUoXll37KB4/hqdefault.jpg",
+  },
   socials: [
     { label: "Instagram", href: "#" },
-    { label: "YouTube", href: "#" },
+    { label: "YouTube", href: "https://www.youtube.com/watch?v=PUoXll37KB4" },
     { label: "LinkedIn", href: "#" },
     { label: "X", href: "#" },
   ],
-  partners: ["[Brand]", "[Partner]", "[Sponsor]", "[Platform]"],
+  partners: ["T-Series", "Pocket Films", "BookMyShow", "Shyam Entertainments"],
 };
 
 /** Formats the studio's single-line contact summary (email • phone • city) from `site`. */

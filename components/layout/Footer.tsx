@@ -52,8 +52,22 @@ export function Footer() {
               {content.footer.contactHeading}
             </h2>
             <ul className="space-y-1.5 text-[0.9375rem] text-muted-on-ink">
-              <li>{site.email}</li>
-              <li>{site.phone}</li>
+              <li>
+                <a
+                  href={`mailto:${site.email}`}
+                  className="transition-colors duration-150 hover:text-yellow"
+                >
+                  {site.email}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`tel:${site.phone}`}
+                  className="transition-colors duration-150 hover:text-yellow"
+                >
+                  {site.phone}
+                </a>
+              </li>
               <li>{site.address}</li>
             </ul>
             <SocialLinks socials={site.socials} surface="ink" className="pt-2" />

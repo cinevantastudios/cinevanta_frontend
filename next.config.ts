@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 import { getEnvApiBaseUrl, getEnvImageHosts } from "./lib/env";
 
-const imageHosts = getEnvImageHosts();
+const BUILTIN_IMAGE_HOSTS = ["i.ytimg.com", "img.youtube.com"];
+const imageHosts = Array.from(new Set([...BUILTIN_IMAGE_HOSTS, ...getEnvImageHosts()]));
 const apiBaseUrl = getEnvApiBaseUrl();
 
 function getOrigin(url: string): string {

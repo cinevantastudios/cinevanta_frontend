@@ -44,12 +44,12 @@ describe("Home page sections (one-page scroll fast-track version)", () => {
     expect(results).toHaveNoViolations();
   });
 
-  it("links featured work cards directly to the one-page contact section", () => {
+  it("links featured work cards directly to their verified video or contact route", () => {
     const work = getMockWork(undefined, 1, 3);
     render(<WorkPreview items={work.items} />);
 
-    const firstCard = screen.getByRole("link", { name: /\[Project Title 1\]/ });
-    expect(firstCard).toHaveAttribute("href", routes.contact);
+    const firstCard = screen.getByRole("link", { name: /Kutumb: The Family/ });
+    expect(firstCard).toHaveAttribute("href", "https://www.youtube.com/watch?v=PUoXll37KB4");
   });
 
   it("renders empty states for zero work items and zero upcoming/past events", () => {
