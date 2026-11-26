@@ -272,7 +272,7 @@ describe("lib/env, lib/utils, lib/validators, lib/tracking, lib/analytics & lib/
       expect(site.email).toBe("amitshreeyadav@gmail.com");
       expect(site.phone).toBe("+91 7992022400");
       expect(site.legalStructure).toBe("Sole proprietorship");
-      expect(site.streetAddress).toBe("183, Pocket A, Mayur Vihar");
+      expect(site.streetAddress).toBe("183, Mayur Vihar Phase 2");
       expect(site.postalCode).toBe("110091");
       expect(site.city).toContain(site.locality);
       expect(site.address).toContain(site.streetAddress);

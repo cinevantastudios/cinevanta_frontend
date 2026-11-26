@@ -115,7 +115,7 @@ const STUDIO_NAME = "Cinevanta Studios";
 const STUDIO_WORDMARK = "Cinevanta";
 const STUDIO_PROPRIETOR_NAME = "Amit Shree Yadav";
 const STUDIO_LEGAL_STRUCTURE = "Sole proprietorship";
-const STUDIO_STREET_ADDRESS = "183, Pocket A, Mayur Vihar";
+const STUDIO_STREET_ADDRESS = "183, Mayur Vihar Phase 2";
 const STUDIO_LOCALITY = "Delhi";
 const STUDIO_POSTAL_CODE = "110091";
 const STUDIO_COUNTRY_NAME = "India";
@@ -146,8 +146,8 @@ export const site: SiteConfig = {
   copyright: `© ${STUDIO_FOUNDED_YEAR} ${STUDIO_NAME}`,
   url: getEnvSiteUrl(),
   showreel: {
-    videoUrl: "https://www.youtube.com/watch?v=PUoXll37KB4",
-    posterUrl: "https://i.ytimg.com/vi/PUoXll37KB4/hqdefault.jpg",
+    videoUrl: "https://www.youtube.com/watch?v=mOokta31Fmk",
+    posterUrl: "https://i.ytimg.com/vi/mOokta31Fmk/hqdefault.jpg",
   },
   socials: [
     { label: "Instagram", href: "#" },

@@ -62,7 +62,7 @@ export function Hero({ showreel }: HeroProps) {
                 <div className="relative aspect-video w-full overflow-hidden rounded-[16px] border-2 border-ink bg-ink">
                   <SafeImage
                     src={showreel.posterUrl}
-                    alt="Kutumb: The Family — Official Trailer"
+                    alt="Celebrity Cricket Cup — Official Video"
                     fill
                     sizes={mediaConfig.dialogHeroSizes}
                     className="object-cover"
@@ -71,7 +71,7 @@ export function Hero({ showreel }: HeroProps) {
                 </div>
                 <div className="flex items-center justify-between px-2 pt-3 pb-1">
                   <span className="font-meta text-ink">
-                    Kutumb: The Family • Watch Trailer ↗
+                    Celebrity Cricket Cup • Watch Video ↗
                   </span>
                   <span className="font-meta text-muted">{content.hero.kicker}</span>
                 </div>
