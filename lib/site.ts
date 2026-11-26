@@ -140,7 +140,7 @@ export const site: SiteConfig = {
   htmlLang: "en",
   timeZone: "Asia/Kolkata",
   foundedYear: STUDIO_FOUNDED_YEAR,
-  email: "amitshreeyadav@gmail.com",
+  email: "cinevantastudios26@gmail.com",
   phone: "+91 7992022400",
   responseTime: "We reply within 1–2 working days.",
   copyright: `© ${STUDIO_FOUNDED_YEAR} ${STUDIO_NAME}`,
@@ -149,12 +149,7 @@ export const site: SiteConfig = {
     videoUrl: "https://www.youtube.com/watch?v=mOokta31Fmk",
     posterUrl: "https://i.ytimg.com/vi/mOokta31Fmk/hqdefault.jpg",
   },
-  socials: [
-    { label: "Instagram", href: "#" },
-    { label: "YouTube", href: "https://www.youtube.com/watch?v=PUoXll37KB4" },
-    { label: "LinkedIn", href: "#" },
-    { label: "X", href: "#" },
-  ],
+  socials: [],
   partners: ["T-Series", "Pocket Films", "BookMyShow", "Shyam Entertainments"],
 };
 

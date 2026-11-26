@@ -393,7 +393,7 @@ export const content = {
   },
   about: {
     pageTitle: "About",
-    kicker: `Est. ${site.foundedYear} • ${site.city}`,
+    kicker: `Production House • ${site.city}`,
     lead: `${site.name} is an independent production house in ${site.city} built for stories on screen, campaigns for brands, and live moments on stage.`,
     statement: "Good cinema always connects with the audience.",
     statementCaption: `${site.name} • ${site.city}`,
@@ -441,8 +441,8 @@ export const content = {
     facts: [
       { label: "Studio", value: site.name },
       { label: "Address", value: site.address },
-      { label: "Established", value: String(site.foundedYear) },
-      { label: "Direct contact", value: `${site.email} • ${site.phone}` },
+      { label: "Disciplines", value: "Films, Ads & Live Events" },
+      { label: "Direct contact", value: `${site.email} • ${site.phone.replace(" ", "\u00A0")}` },
     ] as const,
     connectCta: "Start a conversation",
   },

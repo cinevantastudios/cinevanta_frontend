@@ -269,7 +269,7 @@ describe("lib/env, lib/utils, lib/validators, lib/tracking, lib/analytics & lib/
     it("derives dynamic studio copy and route links from site and routes registries", () => {
       expect(site.shortMark).toBe("C*");
       expect(site.proprietorName).toBe("Amit Shree Yadav");
-      expect(site.email).toBe("amitshreeyadav@gmail.com");
+      expect(site.email).toBe("cinevantastudios26@gmail.com");
       expect(site.phone).toBe("+91 7992022400");
       expect(site.legalStructure).toBe("Sole proprietorship");
       expect(site.streetAddress).toBe("183, Mayur Vihar Phase 2");

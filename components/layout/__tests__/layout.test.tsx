@@ -120,8 +120,7 @@ describe("Global layout & registration flow (one-page scroll fast-track version)
     expect(screen.getByText(site.address)).toBeInTheDocument();
 
     for (const platform of ["Instagram", "YouTube", "LinkedIn", "X"]) {
-      const link = screen.getByRole("link", { name: platform });
-      expect(link.querySelector("svg")).toBeInTheDocument();
+      expect(screen.queryByRole("link", { name: platform })).not.toBeInTheDocument();
     }
 
     const divider = container.querySelector("footer > div.border-t");
