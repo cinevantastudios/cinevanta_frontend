@@ -9,48 +9,40 @@ export interface WordmarkProps {
   className?: string;
 }
 
-const sizeClasses: Record<NonNullable<WordmarkProps["size"]>, string> = {
-  sm: "text-[21.6px] leading-none",
-  md: "text-[25.2px] leading-none",
-  giant: "text-wordmark-giant leading-[0.92]",
+const imageSizeClasses: Record<NonNullable<WordmarkProps["size"]>, string> = {
+  sm: "h-12 w-auto md:h-14",
+  md: "h-14 w-auto md:h-16",
+  giant: "h-24 w-auto md:h-32",
 };
 
 export function Wordmark({
   size = "sm",
   tone = "ink",
   withAsterisk = true,
-  outlined = false,
   className,
 }: WordmarkProps) {
-  const colorClass = outlined
-    ? tone === "cream"
-      ? "text-outline-cream"
-      : "text-outline-ink"
-    : tone === "cream"
-      ? "text-cream"
-      : "text-ink";
+  const logoSrc = tone === "cream" ? "/images/logo-cream.png" : "/images/logo.png";
 
   return (
     <span
       className={cn(
-        "font-display-expanded inline-flex items-baseline whitespace-nowrap select-none",
-        sizeClasses[size],
-        colorClass,
+        "inline-flex items-center whitespace-nowrap select-none",
         className,
       )}
     >
-      {site.wordmark}
-      {withAsterisk ? (
-        <span
-          aria-hidden="true"
-          className={cn(
-            outlined ? "" : tone === "cream" ? "text-cream" : "text-ink",
-          )}
-        >
-          *
-        </span>
-      ) : null}
+      {/* eslint-disable-next-line @next/next/no-img-element -- Static brand logo asset rendered at intrinsic aspect ratio */}
+      <img
+        src={logoSrc}
+        alt=""
+        aria-hidden="true"
+        className={cn("object-contain", imageSizeClasses[size])}
+      />
+      <span className="sr-only">
+        {site.wordmark}
+        {withAsterisk ? "*" : ""}
+      </span>
     </span>
   );
 }
+
 
