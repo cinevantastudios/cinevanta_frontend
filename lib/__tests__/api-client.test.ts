@@ -132,12 +132,12 @@ describe("lib/api", () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("throws when required environment variables are missing instead of falling back", () => {
+  it("falls back to safe pure-frontend defaults when optional backend env variables are omitted", () => {
     delete process.env.NEXT_PUBLIC_API_BASE_URL;
     delete process.env.NEXT_PUBLIC_USE_MOCKS;
 
-    expect(() => getApiBaseUrl()).toThrow("Missing required environment variable: NEXT_PUBLIC_API_BASE_URL");
-    expect(() => isMockMode()).toThrow("Missing required environment variable: NEXT_PUBLIC_USE_MOCKS");
+    expect(getApiBaseUrl()).toBe("");
+    expect(isMockMode()).toBe(true);
   });
 
   it("rejects unsafe javascript: ad linkUrl payloads from the API", async () => {

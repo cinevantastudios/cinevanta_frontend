@@ -81,7 +81,8 @@ export function isNavRouteActive(
 }
 
 /**
- * Builds consistent Next.js page Metadata and Open Graph tags from a single factory.
+ * Builds consistent Next.js page Metadata, canonical URLs, and Open Graph tags from a single factory.
+ * Converts hash-anchor navigation paths (e.g. `/#about`) into clean canonical route paths (`/about`).
  */
 export function createPageMetadata({
   title,
@@ -92,13 +93,18 @@ export function createPageMetadata({
   description: string;
   path: string;
 }): Metadata {
+  const canonicalPath = path.startsWith("/#") ? `/${path.slice(2)}` : path;
+
   return {
     title,
     description,
+    alternates: {
+      canonical: canonicalPath,
+    },
     openGraph: {
       title: `${title} | ${site.name}`,
       description,
-      url: path,
+      url: canonicalPath,
     },
   };
 }

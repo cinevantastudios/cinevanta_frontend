@@ -1,8 +1,10 @@
 /**
  * Centralized environment variable access module.
- * Every `process.env.NEXT_PUBLIC_*` lookup in the application goes through this file
- * with zero silent defaults or fallbacks.
+ * Provides safe pure-frontend defaults when optional backend/mock toggles are omitted,
+ * while keeping strict validation helpers (`requireEnv`, `requireDefinedEnv`) for explicit checks.
  */
+
+const DEFAULT_SITE_URL = "https://www.cinevantastudio.com";
 
 /**
  * Reads a required environment variable without any default or fallback value.
@@ -27,45 +29,46 @@ export function requireDefinedEnv(value: string | undefined, name: string): stri
   return value.trim();
 }
 
-/** Returns the canonical public site URL (`NEXT_PUBLIC_SITE_URL`), failing fast if unset. */
+/** Returns the canonical public site URL (`NEXT_PUBLIC_SITE_URL`), defaulting to the production domain. */
 export function getEnvSiteUrl(): string {
-  return requireEnv(process.env.NEXT_PUBLIC_SITE_URL, "NEXT_PUBLIC_SITE_URL");
+  const trimmed = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  return trimmed ? trimmed.replace(/\/+$/, "") : DEFAULT_SITE_URL;
 }
 
-/** Returns the backend API base URL (`NEXT_PUBLIC_API_BASE_URL`) without trailing slashes. */
+/** Returns the optional backend API base URL (`NEXT_PUBLIC_API_BASE_URL`) without trailing slashes. */
 export function getEnvApiBaseUrl(): string {
-  const raw = requireEnv(process.env.NEXT_PUBLIC_API_BASE_URL, "NEXT_PUBLIC_API_BASE_URL");
-  return raw.replace(/\/+$/, "");
+  const trimmed = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+  return trimmed ? trimmed.replace(/\/+$/, "") : "";
 }
 
-/** Returns true when `NEXT_PUBLIC_USE_MOCKS` is `"true"`, false when `"false"`, and throws otherwise. */
+/** Returns true when `NEXT_PUBLIC_USE_MOCKS` is unset or `"true"`, false when `"false"`, and throws on invalid values. */
 export function getEnvUseMocks(): boolean {
-  const value = requireEnv(
-    process.env.NEXT_PUBLIC_USE_MOCKS,
-    "NEXT_PUBLIC_USE_MOCKS",
-  ).toLowerCase();
+  const trimmed = process.env.NEXT_PUBLIC_USE_MOCKS?.trim();
+  if (!trimmed) {
+    return true;
+  }
+  const value = trimmed.toLowerCase();
   if (value !== "true" && value !== "false") {
     throw new Error(`Invalid NEXT_PUBLIC_USE_MOCKS value: "${value}". Expected "true" or "false".`);
   }
   return value === "true";
 }
 
-/** Returns the mock ads toggle (`NEXT_PUBLIC_MOCK_ADS`), failing fast if unset. */
+/** Returns the optional mock ads toggle (`NEXT_PUBLIC_MOCK_ADS`), defaulting to `"0"` for static frontend mode. */
 export function getEnvMockAdsMode(): string {
-  return requireEnv(process.env.NEXT_PUBLIC_MOCK_ADS, "NEXT_PUBLIC_MOCK_ADS");
+  const trimmed = process.env.NEXT_PUBLIC_MOCK_ADS?.trim();
+  return trimmed || "0";
 }
 
-/** Returns the mock events toggle (`NEXT_PUBLIC_MOCK_EVENTS`), failing fast if unset. */
+/** Returns the optional mock events toggle (`NEXT_PUBLIC_MOCK_EVENTS`), defaulting to `"none"` for static frontend mode. */
 export function getEnvMockEventsMode(): string {
-  return requireEnv(process.env.NEXT_PUBLIC_MOCK_EVENTS, "NEXT_PUBLIC_MOCK_EVENTS");
+  const trimmed = process.env.NEXT_PUBLIC_MOCK_EVENTS?.trim();
+  return trimmed || "none";
 }
 
-/** Returns the parsed array of allowed remote image hostnames from `NEXT_PUBLIC_IMAGE_HOSTS`. */
+/** Returns the parsed array of optional extra remote image hostnames from `NEXT_PUBLIC_IMAGE_HOSTS`. */
 export function getEnvImageHosts(): string[] {
-  const raw = requireDefinedEnv(
-    process.env.NEXT_PUBLIC_IMAGE_HOSTS,
-    "NEXT_PUBLIC_IMAGE_HOSTS",
-  );
+  const raw = process.env.NEXT_PUBLIC_IMAGE_HOSTS?.trim() ?? "";
   const hosts = new Set<string>();
   for (const entry of raw.split(",")) {
     const trimmed = entry.trim();

@@ -3,7 +3,14 @@ import { Hero } from "@/components/home/Hero";
 import { Services } from "@/components/home/Services";
 import { WorkPreview } from "@/components/home/WorkPreview";
 import { SocialLinks } from "@/components/layout/SocialLinks";
-import { JsonLd, buildOrganizationJsonLd } from "@/components/seo/JsonLd";
+import {
+  JsonLd,
+  buildFeaturedWorksJsonLd,
+  buildFounderPersonJsonLd,
+  buildLocalBusinessJsonLd,
+  buildOrganizationJsonLd,
+  buildWebSiteJsonLd,
+} from "@/components/seo/JsonLd";
 import { getWork } from "@/lib/api-client";
 import { content } from "@/lib/content";
 import { displayLimits, site } from "@/lib/site";
@@ -21,6 +28,10 @@ export default async function HomePage() {
   return (
     <>
       <JsonLd data={buildOrganizationJsonLd()} />
+      <JsonLd data={buildWebSiteJsonLd()} />
+      <JsonLd data={buildLocalBusinessJsonLd()} />
+      <JsonLd data={buildFounderPersonJsonLd()} />
+      <JsonLd data={buildFeaturedWorksJsonLd()} />
       <main id="main-content">
         {/* 1. Hero */}
         <Hero showreel={site.showreel} />

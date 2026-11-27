@@ -33,15 +33,38 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
+  applicationName: site.name,
   title: {
     default: content.meta.defaultTitle,
     template: content.meta.titleTemplate,
   },
   description: content.meta.defaultDescription,
+  keywords: [...content.meta.keywords],
+  authors: [
+    { name: site.proprietorName },
+    { name: site.name, url: site.url },
+  ],
+  creator: site.name,
+  publisher: site.name,
+  category: "Film Production & Live Entertainment",
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
     type: "website",
     locale: site.ogLocale,
-    url: site.url,
+    url: "/",
     siteName: site.name,
     title: content.meta.defaultTitle,
     description: content.meta.defaultDescription,
